@@ -1,0 +1,374 @@
+#include "game.h"
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+bool gameSelectSpeedDiv(void);
+
+struct game_state_t game;
+
+// TODO: get real value
+static int init_dist = 60;
+
+
+/**
+ * @brief Generate an array of coordinates for the corners of a ngon.
+ * @detail (num_corners+1)*2 corners will be created so it's possilbe to loop
+ * through the array with one extra iterations but
+ * @detail The supplied buffer must have enough space for one extra coordinate
+ * tuple.
+ * @detail The coordinates will be based on a local coordinate system with (0,
+ * 0) as the center of the ngon.
+ * @returns False if the ngon is not supported or parameters are wrong.
+ */
+bool generateCorners(int8_t *buf, uint8_t radius, uint8_t num_corners)
+{
+    assert(buf != NULL && radius > 0 && num_corners > 2);
+
+    int8_t *init_buf = buf;
+    // phase offset to get nicely aligned shapes
+    const float phase = 2.0f*M_PI/(num_corners);
+    //const float phase = 0;
+
+    // start with the upper right corner, go clockwise
+    int i;
+    for (i=0; i<num_corners; i++) {
+        const float tmp = phase+(float)i*2.0f*M_PI/(float)num_corners;
+        *buf = radius*sin(tmp); buf++;
+        *buf = radius*cos(tmp); buf++;
+    }
+
+    // append the first corner to the end of the buffer
+    *buf = * init_buf;       buf++;
+    *buf = *(init_buf+1);   buf++;
+
+    return true;
+}
+
+/**
+ * @brief Add a new bar at the edge of the playfield.
+ * @returns created bar, if valid. NULL on error.
+ */
+static bar_t *gameAddBar(uint8_t sector, uint8_t width)
+{
+    // TODO: ignored for now
+    /*assert(width > 0);*/
+    assert(!(game.num_bars > MAX_BARS));
+    if (game.num_bars == MAX_BARS) {
+        return NULL;
+    }
+
+    int i;
+    for (i=0; i<MAX_BARS; i++) {
+        bar_t *b = &game.bars[i];
+        if (!b->valid) {
+            b->valid = true;
+            b->sector = sector;
+            b->width = width;
+            b->dist = init_dist;
+            game.num_bars++;
+            return b;
+        }
+    }
+    return NULL;
+}
+
+/**
+ * @brief Delete a bar from the game.
+ * @detail May give points to the player if requested and player not dead.
+ */
+static void gameDeleteBar(bar_t *b, bool give_points) {
+    assert(b != NULL && b->valid);
+
+    b->valid = false;
+    game.num_bars--;
+
+    if (give_points && !game.over) {
+        game.points += 1*POINT_MULTIPLIER;
+        gameSelectSpeedDiv();
+    }
+}
+
+static void gameDeleteAllBars(void)
+{
+    int i;
+    for (i=0; i<MAX_BARS; i++) {
+        if (game.bars[i].valid) {
+            gameDeleteBar(&game.bars[i], false);
+        }
+    }
+}
+/**
+ * @brief Change the level's current polygon.
+ * @returns true if the change was successful, false if value is forbidden or
+ * the same as the current polygon.
+ */
+bool gameChangePolygon(uint8_t val)
+{
+    if (game.shape == val) {
+        return false;
+    }
+    if (val < MIN_SHAPE) {
+        return false;
+    }
+
+    gameDeleteAllBars();
+
+    game.shape = val;
+    return true;
+}
+
+/**
+ * @brief Select the speed of the bars depending on the player's points.
+ * @returns true if the divider changed.
+ */
+bool gameSelectSpeedDiv(void)
+{
+    game.speed_div = 1;
+#if 0
+    uint8_t last_div = game.speed_div;
+    if (game.points < 10) {
+        game.speed_div = MAX_BAR_SPEED_DIVIDER;
+    } else if (game.points < 40) {
+        game.speed_div = 4;
+    } else if (game.points < 110) {
+        game.speed_div = 3;
+    } else if (game.points < 230) {
+        game.speed_div = 2;
+    } else if (game.points < 350) {
+        game.speed_div = 1;
+    } else {
+        game.speed_div = 0;
+    }
+#endif
+
+    // next level each 100 points
+    if (game.points % 50 == 0) {
+        /*gameChangePolygon(game.shape+1);*/
+        gameChangePolygon((rand() % 5) + MIN_SHAPE);
+    }
+
+    /*return last_div != game.speed_div;*/
+    return false;
+}
+
+
+/**
+ * @brief Initialize the game state.
+ */
+void gameInit(void)
+{
+    time_t t;
+    time(&t);
+    srand((unsigned int)t);
+
+    bar_t unused_bar = {.sector=0, .dist=0, .width=0, .valid=false};
+    int i;
+    for (i=0; i<MAX_BARS; i++) {
+        game.bars[i] = unused_bar;
+    }
+
+    game.ticks = 0;
+    game.speed_div = 1;
+    game.num_bars = 0;
+
+    game.player_rot = 0.0f;
+    game.points = 0;
+
+    game.over = false;
+    game.dead = false;
+
+    game.inner_radius = 8;
+    game.shape = MIN_SHAPE;
+
+    input.button_a = false;
+    input.button_b = false;
+
+    gameSelectSpeedDiv();
+
+    framebufferClear(Pixel_dark);
+}
+
+static bool playerCollidesWithBars(uint8_t x, uint8_t y)
+{
+#define CHECK_PIXEL(xadd, yadd) \
+    p = framebufferPixel(x+(xadd), y+(yadd)); \
+    if (*p != Pixel_dark) return true; \
+    // assumes the player is always a cross
+    //  #
+    // ###
+    //  #
+    uint8_t *p;
+    CHECK_PIXEL( 0,  0);
+    CHECK_PIXEL(-1,  0);
+    CHECK_PIXEL( 0, -1);
+    CHECK_PIXEL( 1,  0);
+    CHECK_PIXEL( 0,  1);
+
+    return false;
+}
+
+void playerSetDead(void)
+{
+    game.over = true;
+    game.dead = true;
+    game.dead_timer = MAX_DEAD_TIMER;
+}
+/**
+ * @brief Render the game objects to the game framebuffer.
+ */
+void gameRender(void)
+{
+    // change order
+#if 0
+    const int max = 100;
+    static int div = 0;
+    static bool dir_up = true;
+    div++;
+    if (div && (div % max) == 0) {
+        game.shape += dir_up ? 1 : -1;
+        if (game.shape == 3 || game.shape> 7) {
+            gameDeleteAllBars();
+            game.shape = 3;
+            //dir_up = !dir_up;
+        }
+
+    }
+#endif
+
+    framebufferClear(Pixel_dark);
+
+    drawBars();
+
+    // Check the player collision now.
+    // If there is already a pixel, the player is colliding with the walls.
+    if (!game.over) {
+        if (playerCollidesWithBars(game.player_x, game.player_y)) {
+            playerSetDead();
+        }
+    }
+
+    drawPlayer(game.player_x, game.player_y);
+
+    if (game.dead) {
+        if (game.dead_timer > 0) {
+            game.dead_timer--;
+        }
+        int i;
+        for (i=0; i<10; i++) {
+            // TODO: check for overflows
+            // and use bigger types here
+            /*drawCentergon((MAX_DEAD_TIMER-game.dead_timer)+game.inner_radius+10*i, game.shape);*/
+            int tmp = MAX_DEAD_TIMER - game.dead_timer;
+            tmp += game.inner_radius+10*i;
+            drawCentergon((uint8_t) tmp, game.shape);
+        }
+    } else {
+        drawCentergon(game.inner_radius, game.shape);
+    }
+
+    // draw the game tick
+    // TODO
+
+    // draw the level number
+    // TODO
+
+    // draw the points
+    // TODO
+}
+
+static void movePlayer(void)
+{
+    uint8_t x,y;
+
+    static int add = 0;
+    if (input.button_a) {
+        add++;
+    } else if (input.button_b) {
+        add--;
+    }
+
+    x = GAME_CENTER_X;
+    y = GAME_CENTER_Y;
+
+    const int r = game.inner_radius+2;
+    const float div = 5.0;
+    x += r*sin(add/div);
+    y += r*cos(add/div);
+
+    game.player_x = x;
+    game.player_y = y;
+}
+
+/**
+ * @brief Check whether placing a bar in sector s makes the game impossible.
+ * @returns true if it is ok, false if the player cannot escape when placing
+ * that bar.
+ */
+bool isSectorOk(uint8_t s)
+{
+    // TODO implement feature
+    return true;
+}
+
+/**
+ * @brief Advance the game state.
+ * @returns true if game should be reset.
+ */
+bool gameTick(void)
+{
+    // move the player if a button is pressed
+    if (!game.dead) {
+        movePlayer();
+    }
+
+    // check whether the player collides with bars
+    // TODO
+
+    // move each bar closer to the center
+    int i;
+    for (i=0; i<MAX_BARS; i++) {
+        bar_t *b = &game.bars[i];
+        if (b->valid) {
+            // remove bars that have reached the center
+            if (b->dist <= game.inner_radius) {
+                gameDeleteBar(b, true);
+                continue;
+            }
+            if (game.ticks && (game.ticks % game.speed_div) == 0) {
+                b->dist -= 1;
+            }
+        }
+    }
+
+    // add new bars until there are enough on the playfield
+    if (!game.over) {
+        if (game.num_bars < MAX_BARS) {
+            if (rand() % 180 < 13 + 8*(game.shape-MIN_SHAPE)) {
+            /*if (rand() % 180 < (10 + 2*(MAX_BAR_SPEED_DIVIDER-game.speed_div))) {*/
+                // TODO: randomize + patterns
+                uint8_t s = rand() % game.shape;
+                if (isSectorOk(s)) {
+                    gameAddBar(s, 0);
+                }
+            }
+        }
+    }
+
+    // rotate the playfield
+    // TODO
+
+    // move the plafield nearer to the player
+    // TODO
+
+    // change direction and amount of playfield rotation from time to time
+    // TODO
+    game.ticks++;
+
+    if (game.over && input.restart) {
+        return false;
+    }
+    return true;
+}
+
