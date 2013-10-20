@@ -67,6 +67,8 @@ static bar_t *gameAddBar(uint8_t sector, uint8_t width)
             b->sector = sector;
             b->width = width;
             b->dist = init_dist;
+            b->exploding = false;
+            b->timer = 0;
             game.num_bars++;
             return b;
         }
@@ -76,18 +78,26 @@ static bar_t *gameAddBar(uint8_t sector, uint8_t width)
 
 /**
  * @brief Delete a bar from the game.
- * @detail May give points to the player if requested and player not dead.
  */
-static void gameDeleteBar(bar_t *b, bool give_points) {
+static void gameDeleteBar(bar_t *b) {
     assert(b != NULL && b->valid);
 
     b->valid = false;
     game.num_bars--;
+}
 
-    if (give_points && !game.over) {
+/**
+ * @brief Transform a bar into an explosion if the bar hits the centergon.
+ * @detail May give points to the player if the player is not dead.
+ */
+static void gameDestroyBar(bar_t *b)
+{
+    if (!game.over) {
         game.points += 1*POINT_MULTIPLIER;
         gameSelectSpeedDiv();
     }
+    b->timer = 20;
+    b->exploding = true;
 }
 
 static void gameDeleteAllBars(void)
@@ -95,7 +105,7 @@ static void gameDeleteAllBars(void)
     int i;
     for (i=0; i<MAX_BARS; i++) {
         if (game.bars[i].valid) {
-            gameDeleteBar(&game.bars[i], false);
+            gameDeleteBar(&game.bars[i]);
         }
     }
 }
@@ -249,6 +259,9 @@ void gameRender(void)
         }
     }
 
+    // now draw the explosion effects, which should not affect the collision
+    drawExplodingBars();
+
     drawPlayer(game.player_x, game.player_y);
 
     if (game.dead) {
@@ -331,13 +344,23 @@ bool gameTick(void)
     for (i=0; i<MAX_BARS; i++) {
         bar_t *b = &game.bars[i];
         if (b->valid) {
-            // remove bars that have reached the center
-            if (b->dist <= game.inner_radius) {
-                gameDeleteBar(b, true);
-                continue;
-            }
-            if (game.ticks && (game.ticks % game.speed_div) == 0) {
-                b->dist -= 1;
+            if (b->exploding) {
+                // advance explosion of bar
+                if (b->timer > 0) {
+                    b->timer--;
+                } else {
+                    gameDeleteBar(b);
+                }
+            } else {
+                // explode bars that have just reached the center
+                if (b->dist <= game.inner_radius) {
+                    gameDestroyBar(b);
+                    continue;
+                }
+                // move other bars closer to the center
+                if (game.ticks && (game.ticks % game.speed_div) == 0) {
+                    b->dist -= 1;
+                }
             }
         }
     }

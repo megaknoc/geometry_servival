@@ -21,7 +21,9 @@ typedef struct bar_t {
     uint8_t sector;     // sector in the hexagon in which the bar lies
     uint8_t dist;       // distance of the bar from the center
     uint8_t width;      // width of the bar (extends to the outside)
+    uint8_t timer;      // timer for the progress of an exploding bar
     uint8_t valid:1;    // flag: this bar is used
+    uint8_t exploding:1;// flag: this bar is currently exploding
 } bar_t;
 
 extern struct game_state_t {

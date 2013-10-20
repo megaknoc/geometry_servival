@@ -42,6 +42,52 @@ void drawBar(bar_t *bar)
         Pixel_bright);
 }
 
+/**
+ * @brief Draw an exploding bar.
+ */
+void drawExplodingBar(bar_t *bar)
+{
+    assert(bar != NULL && bar->valid);
+    assert(bar->sector < game.shape);
+    assert(bar->exploding);
+
+    int8_t cs[2*(game.shape+1)];
+    generateCorners(cs, bar->dist, game.shape);
+
+    const int i = bar->sector;
+    // TODO
+    // break the bar into smaller bars and throw them away in the direction
+    // they are coming from
+
+    // XXX random pixels as the explosion for now
+    // The direction can be computed from the sector and the current game
+    // shape.
+    uint8_t x0, x1, y0, y1;
+    x0 = GAME_CENTER_X + cs[2*i+0];
+    y0 = GAME_CENTER_Y + cs[2*i+1];
+    x1 = GAME_CENTER_X + cs[2*i+2];
+    y1 = GAME_CENTER_Y + cs[2*i+3];
+
+    if ((bar->timer % 5) < 3) {
+        framebufferSet(x0+2, y0-1, Pixel_bright);
+        framebufferSet(x1-1, y1+2, Pixel_bright);
+    } else {
+        framebufferSet(x0+3, y0+1, Pixel_bright);
+        framebufferSet(x1-2, y1, Pixel_bright);
+    }
+}
+
+void drawExplodingBars(void)
+{
+    int i;
+    for (i=0; i<MAX_BARS; i++) {
+        bar_t *b = &game.bars[i];
+        if (b->valid && b->exploding) {
+            drawExplodingBar(b);
+        }
+    }
+}
+
 void drawBars(void)
 {
     int i;

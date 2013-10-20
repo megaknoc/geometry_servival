@@ -11,10 +11,12 @@ WARN = -Wall \
 INCLUDES = -I/usr/lib -lsfml-graphics -lsfml-window -lsfml-system \
 		   -lGL -lm
 
-CFLAGS = -std=c99 -g -O0 $(WARN)
+OPTIMIZATION = 0
+
+CFLAGS = -std=c99 -g -O$(OPTIMIZATION) $(WARN)
 LDFLAGS = $(INCLUDES)
 
-CXXFLAGS = -std=c++11 -g -O0 $(WARN)
+CXXFLAGS = -std=c++11 -g -O$(OPTIMIZATION) $(WARN)
 
 SRCS = src/hexagon.cpp \
 	   src/simulator.cpp \
