@@ -321,21 +321,20 @@ static void movePlayer(void)
  */
 bool isSectorOk(uint8_t s)
 {
-    // TODO implement feature
-    
-    
     uint8_t max_distance = 0;
-    
-    for (int i = 0; i < MAX_BARS-1; i++)
-    {
-        bar_t * currBar = &game.bars[i];
-        if(currBar->valid)
-        max_distance = currBar->dist > max_distance ? currBar->dist : max_distance;
+
+    int i;
+    for (i = 0; i < MAX_BARS; i++) {
+        bar_t *currBar = &game.bars[i];
+        if (currBar->valid) {
+            max_distance = currBar->dist > max_distance ? currBar->dist : max_distance;
+        }
     }
-    
-    if(init_dist - max_distance < 7)    // 7 should be an appropriate value
+
+    if (init_dist - max_distance < 7) {   // 7 should be an appropriate value
         return false;
-    
+    }
+
     return true;
 }
 
