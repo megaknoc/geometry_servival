@@ -2,6 +2,7 @@ Needed packets
 --------------
 
 SFML (http://www.sfml-dev.org/)
+OpenGL
 
 Control
 -------
