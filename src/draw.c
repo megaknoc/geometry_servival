@@ -31,6 +31,7 @@ void drawBar(bar_t *bar)
 {
     assert(bar != NULL && bar->valid);
     assert(bar->sector < game.shape);
+    assert(!bar->exploding);
 
     int8_t cs[2*(game.shape+1)];
     generateCorners(cs, bar->dist, game.shape);
@@ -77,6 +78,9 @@ void drawExplodingBar(bar_t *bar)
     }
 }
 
+/**
+ * @brief Draw all exploding bars.
+ */
 void drawExplodingBars(void)
 {
     int i;
@@ -88,12 +92,15 @@ void drawExplodingBars(void)
     }
 }
 
+/**
+ * @brief Draw all living bars.
+ */
 void drawBars(void)
 {
     int i;
     for (i=0; i<MAX_BARS; i++) {
         bar_t *b = &game.bars[i];
-        if (b->valid) {
+        if (b->valid && !b->exploding) {
             drawBar(b);
         }
     }

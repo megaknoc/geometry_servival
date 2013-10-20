@@ -96,7 +96,7 @@ static void gameDestroyBar(bar_t *b)
         game.points += 1*POINT_MULTIPLIER;
         gameSelectSpeedDiv();
     }
-    b->timer = 20;
+    b->timer = 11;
     b->exploding = true;
 }
 
