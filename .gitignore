@@ -1,4 +1,4 @@
 dumps/*
-build/*.o
+build/*
 hexagon
 
