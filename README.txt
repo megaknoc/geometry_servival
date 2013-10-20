@@ -3,6 +3,12 @@ Needed packets
 
 SFML (http://www.sfml-dev.org/)
 
+Control
+-------
+
+Use left and right arrow keys to move the player. Press R to restart the game
+when the player is dead.
+
 Game organization
 -----------------
 
