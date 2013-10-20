@@ -9,7 +9,7 @@ WARN = -Wall \
        -Wno-unused-function
 
 INCLUDES = -I/usr/lib -lsfml-graphics -lsfml-window -lsfml-system \
-		   -lGL -lGLU -lglut -lGLEW -lm
+		   -lGL -lm
 
 CFLAGS = -std=c99 -g -O0 $(WARN)
 LDFLAGS = $(INCLUDES)

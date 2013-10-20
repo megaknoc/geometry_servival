@@ -2,7 +2,7 @@
 #include <math.h>
 
 #include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
+//#include <SFML/OpenGL.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 

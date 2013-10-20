@@ -105,11 +105,10 @@ Simulator::Simulator() : window(
     window.setFramerateLimit(25);
 
     // load both shaders
-    if (!shader.loadFromFile("data/shader/shader.vert", "data/shader/shader.frag")) {
-        std::cerr<<"Could not load shaders from file!"<<::std::endl;
-        exit(-1);
-    }
-
+    //if (!shader.loadFromFile("data/shader/shader.vert", "data/shader/shader.frag")) {
+        //std::cerr<<"Could not load shaders from file!"<<::std::endl;
+        //exit(-1);
+    //}
     //shader.setParameter("texture", sf::Shader::CurrentTexture);
 
     // define it as a rectangle, located at (10, 10) and with size 100x100
