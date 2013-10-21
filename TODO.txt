@@ -1,11 +1,8 @@
 add consistent naming schemata
-seperate player/input settings into seperate data structures
 add multiplayer
-add generation of bars with nice patterns
-add global translation/rotation matrix
 add stats via sfml text
 add explosion when bars hit the wall
 add option to fill the level with debris created by bars
 add proper dependency handling to makefile
 include or generate sine table
-
+add optional lcd effect to the simulator
