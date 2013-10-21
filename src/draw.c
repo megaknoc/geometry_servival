@@ -237,7 +237,7 @@ void drawFill(void)
 void drawCentergonArms(void)
 {
     // default value that is used if bars are too far away
-    const uint8_t max_value = 20;
+    const uint8_t max_value = 30;
     uint8_t min_bar_dist = max_value;
     int i;
 
@@ -251,23 +251,22 @@ void drawCentergonArms(void)
         }
     }
 
-    const int stretch = 6 + min_bar_dist;
+    const int stretch = 3 + min_bar_dist;
 
     // The effective factor is low pass filtered and mixed with a sine to look
     // more dynamic
-    static float factor = 10;
+    static int factor = 10;
     // TODO:
     // make period shorter, if the less points are needed for level-up
     factor = ((5.0f*factor)/6.0f + (stretch/6.0f));
 
-    const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);
-
-    /*factor = stretch * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
+    /*const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
+    factor *= (1.0f+sin(2.0f*M_PI*game.ticks/13)/2.0f);
 
     // Show a few marker points as the arms
     for (i=0; i<4; i++) {
         uint32_t tmp = 0;
-        tmp += eff_factor * pow(i, 2);
+        tmp += factor * pow(i, 2);
         /*tmp += factor*(i*i)/3;*/
         tmp /= 40;
         tmp += i;
