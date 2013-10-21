@@ -212,14 +212,19 @@ void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines)
     int i;
     // TODO: whats's that number i<foo ?
     for (i=0; i<2*(order-1)+1; i += 2) {
-
-        int final_coords[] = {
-            GAME_CENTER_X + corners[i],     GAME_CENTER_Y + corners[i+1],
-            GAME_CENTER_X + corners[i+2],   GAME_CENTER_Y + corners[i+3]
-        };
         
-        calculateRotation(&final_coords[0], &final_coords[1]);
-        calculateRotation(&final_coords[2], &final_coords[3]);
+        int x0 = corners[i];
+        int y0 = corners[i+1];
+        int x1 = corners[i+2];
+        int y1 = corners[i+3];
+        
+        calculateRotation(&x0, &y0);
+        calculateRotation(&x1, &y1);
+
+        const int final_coords[] = {
+            GAME_CENTER_X + x0,     GAME_CENTER_Y + y0,
+            GAME_CENTER_X + x1,   GAME_CENTER_Y + y1
+        };
         
         if (with_lines) {
             drawLine(
