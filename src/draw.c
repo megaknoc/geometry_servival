@@ -24,10 +24,69 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
 }
 
 /**
+ * @brief Draw a line from (x,y) to (x2, y2) with stipple pattern.
+ * @detail The n'th bit in stipple will decide whether the n'th pixel of the
+ * line will be drawn.
+ */
+void drawLineStipple(int x0, int y0, int x1, int y1, uint32_t stipple, int val)
+{
+    int dx =  abs(x1-x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -abs(y1-y0), sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy, e2; /* error value e_xy */
+
+    int stipple_ix = 0;
+
+    while(1) {
+        if (stipple & _BV(stipple_ix)) {
+            framebufferSet(x0, y0, val);
+        }
+        stipple_ix++;
+        if (stipple_ix >= (sizeof(stipple) * 8)) {
+            stipple_ix = 0;
+        }
+        if (x0 == x1 && y0 == y1) {
+            break;
+        }
+
+        e2 = 2*err;
+
+        if (e2 > dy) { err += dy; x0 += sx; }
+        if (e2 < dx) { err += dx; y0 += sy; }
+    }
+}
+
+uint32_t patternFromDist(uint8_t s)
+{
+    const uint32_t stipple_patterns[] = {
+        0b11111111111111111111111111111111,
+        0b11111111111101111111111111110111,
+        0b01110111111101111111111111111111,
+        0b11110111111001111111011110110110,
+        0b10110101111100111111011101011111,
+        0b11010111101101011011001101101111,
+        0b10101111011001011101001110010011,
+        0b00100111001001010101001010100010,
+        0b00101100011000010111001001000010,
+        0b00001100000100000110000000100000,
+        0b00010000000000000100000000000010,
+        0b00000000000000000000000000000000,
+    };
+
+    const int max = ARRAY_SIZE(stipple_patterns);
+    int tmp = (s - (int) game.inner_radius - 2) / 4;
+    if (tmp < 0) {
+        tmp = 0;
+    } else if (tmp >= max) {
+        tmp = max-1;
+    }
+    return stipple_patterns[tmp];
+}
+
+/**
  * @brief Draw a bar in its sector.
  * @detail The current shape determines the appeareance of the bar.
  */
-void drawBar(bar_t *bar)
+void drawBar(bar_t *bar, bool use_stipple)
 {
     assert(bar != NULL && bar->valid);
     assert(bar->sector < game.shape);
@@ -37,10 +96,19 @@ void drawBar(bar_t *bar)
     generateCorners(cs, bar->dist, game.shape);
 
     const int i = bar->sector;
-    drawLine(
-        GAME_CENTER_X + cs[2*i+0], GAME_CENTER_Y + cs[2*i+1],
-        GAME_CENTER_X + cs[2*i+2], GAME_CENTER_Y + cs[2*i+3],
-        Pixel_bright);
+
+    if (use_stipple) {
+        drawLineStipple(
+            GAME_CENTER_X + cs[2*i+0], GAME_CENTER_Y + cs[2*i+1],
+            GAME_CENTER_X + cs[2*i+2], GAME_CENTER_Y + cs[2*i+3],
+            bitrot_l(patternFromDist(bar->dist), bar->dist/2),
+            Pixel_bright);
+    } else {
+        drawLine(
+            GAME_CENTER_X + cs[2*i+0], GAME_CENTER_Y + cs[2*i+1],
+            GAME_CENTER_X + cs[2*i+2], GAME_CENTER_Y + cs[2*i+3],
+            Pixel_bright);
+    }
 }
 
 /**
@@ -95,13 +163,14 @@ void drawExplodingBars(void)
 /**
  * @brief Draw all living bars.
  */
-void drawBars(void)
+void drawBars(bool use_stipple)
 {
     int i;
     for (i=0; i<MAX_BARS; i++) {
         bar_t *b = &game.bars[i];
         if (b->valid && !b->exploding) {
-            drawBar(b);
+            drawBar(b, use_stipple);
+            /*printf("dist: %d\n", (int) b->dist);*/
         }
     }
 }
@@ -135,6 +204,26 @@ void drawCentergon(uint8_t outer_radius, uint8_t order)
         drawLine(
             GAME_CENTER_X + corners[i],   GAME_CENTER_Y + corners[i+1],
             GAME_CENTER_X + corners[i+2], GAME_CENTER_Y + corners[i+3],
+            Pixel_bright);
+    }
+}
+
+void drawCentergonCorners(uint8_t outer_radius, uint8_t order)
+{
+    int8_t corners[2*(order+1)];
+    generateCorners(corners, outer_radius, order);
+
+    int i;
+    for (i=0; i<2*(order-1)+1; i += 2) {
+
+        framebufferSet(
+            GAME_CENTER_X + corners[i],
+            GAME_CENTER_Y + corners[i+1],
+            Pixel_bright);
+
+        framebufferSet(
+            GAME_CENTER_X + corners[i+2],
+            GAME_CENTER_Y + corners[i+3],
             Pixel_bright);
     }
 }

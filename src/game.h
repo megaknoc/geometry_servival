@@ -14,6 +14,7 @@
 #include "framebuffer.h"
 #include "game_types.h"
 #include "input.h"
+#include "util.h"
 
 #ifdef __cplusplus
 extern "C" {

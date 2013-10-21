@@ -1,9 +1,5 @@
 #include "game.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 bool gameSelectSpeedDiv(void);
 
 struct game_state_t game;
@@ -249,7 +245,7 @@ void gameRender(void)
 
     framebufferClear(Pixel_dark);
 
-    drawBars();
+    drawBars(true);
 
     // Check the player collision now.
     // If there is already a pixel, the player is colliding with the walls.
@@ -264,11 +260,11 @@ void gameRender(void)
 
     drawPlayer(game.player_x, game.player_y);
 
+    int i;
     if (game.dead) {
         if (game.dead_timer > 0) {
             game.dead_timer--;
         }
-        int i;
         for (i=0; i<10; i++) {
             // TODO: check for overflows
             // and use bigger types here
@@ -279,6 +275,21 @@ void gameRender(void)
         }
     } else {
         drawCentergon(game.inner_radius, game.shape);
+    }
+
+    const int div = 20 * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);
+    // show a few marker points
+    for (i=0; i<5; i++) {
+        uint32_t tmp = 0;
+        tmp += div*pow(i, 2);
+        tmp /= 40;
+        if (game.over && game.dead) {
+            tmp /= 1+(MAX_DEAD_TIMER - game.dead_timer);
+        }
+        if (!(game.over && game.dead && game.dead_timer == 0)) {
+            tmp += game.inner_radius;
+            drawCentergonCorners(tmp, game.shape);
+        }
     }
 
     // draw the game tick
