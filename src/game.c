@@ -510,9 +510,10 @@ bool gameTick(void)
     }
 
     // rotate the playfield
-    game.field_rot += game.field_rot_dir * 0.03f;    //Todo: Fix overflow
+	game.field_rot += game.field_rot_dir * 0.03f;    //Todo: Fix overflow
 
-	if (rand() % 300 < 1) {
+	// 1/200th chance of changing the rotation direction
+	if (rand() % 200 < 1) {
 		game.field_rot_dir *= -1;
 	}
 
