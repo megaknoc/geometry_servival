@@ -30,7 +30,7 @@ class Simulator {
     void showFramebuffer(void);
     bool isRunning(void) { return running; };
     void processInput(void);
-    void calculateFramebuffer(void);
+    void calculateFramebuffer(bool force_pixels);
     sf::Vertex* getPixelVertices(uint8_t x, uint8_t y);
 };
 

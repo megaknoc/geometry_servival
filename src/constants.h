@@ -16,7 +16,7 @@
 
 // pixel padding is not yet properly implemented
 #define PIXEL_PADDING               0
-#define PIXEL_SIZE                  4
+#define PIXEL_SIZE                  3
 
 // maximum amount of bars that can be created at a time
 #define MAX_BARS                    200
@@ -29,6 +29,13 @@
 
 #define MAX_DEAD_TIMER              20
 #define POINT_MULTIPLIER            1
+
+// 1      : instant updates of pixels on the screen
+// 1..0.5 : slower update; pixel needs a few refreshs to get the desired brigthness
+// 0.3..0 : very slow update; moving pixels create long traces, need more frames
+//   to update.
+// Good value to (look like 1 Euro LCD) is 0.3
+#define LCD_PIXEL_GHOST_FACTOR 0.3f
 
 //const uint8_t Center_x = GAME_AREA_SIZE/2;
 //const uint8_t Center_y = GAME_AREA_SIZE/2;

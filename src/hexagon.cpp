@@ -16,9 +16,9 @@ int main()
 
     do {
         gameInit();
+        s.calculateFramebuffer(true);
 
-        while (s.isRunning())
-        {
+        while (s.isRunning()) {
             s.processInput();
 
             bool go_on = gameTick();
@@ -27,7 +27,7 @@ int main()
             }
             gameRender();
 
-            s.calculateFramebuffer();
+            s.calculateFramebuffer(false);
             s.showFramebuffer();
         }
     } while(s.isRunning());

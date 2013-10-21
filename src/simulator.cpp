@@ -13,15 +13,34 @@ void Simulator::drawRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const 
     // window.draw(r);
 }
 
-
-void Simulator::calculateFramebuffer(void)
+/**
+ * @brief Update the vertices color from the game's pixel framebuffer.
+ * @param [in] force_pixels Ignore the LCD_PIXEL_GHOST_FACTOR and copy the
+ * colors directly.
+ */
+void Simulator::calculateFramebuffer(bool force_pixels)
 {
         int x,y;
         for (x=0; x<FRAMEBUFFER_WIDTH; x++) {
             for (y=0; y<FRAMEBUFFER_HEIGHT; y++) {
-                uint8_t *px = framebufferPixel(x, y);
-                const sf::Color clr = *px > 0 ? sf::Color::White : sf::Color::Black;
                 sf::Vertex *v = getPixelVertices(x, y);
+                uint8_t *px = framebufferPixel(x, y);
+
+                const sf::Color old = v[0].color;
+                sf::Color clr = *px > 0 ? sf::Color::White : sf::Color::Black;
+                if (old == clr) {
+                    continue;
+                }
+                if (!force_pixels) {
+                    // mix colors to give LCD appeareance
+                    clr = *px > 0 ? sf::Color::White : sf::Color::Black;
+
+                    const float a = LCD_PIXEL_GHOST_FACTOR;
+                    clr.r = clr.r*a + old.r*(1.0f-a);
+                    clr.g = clr.g*a + old.g*(1.0f-a);
+                    clr.b = clr.b*a + old.b*(1.0f-a);
+                }
+
                 int j;
                 for (j=0; j<4; j++) {
                     v[j].color = clr;
@@ -165,7 +184,6 @@ void Simulator::processInput(void)
     sf::Event event;
     while (window.pollEvent(event))
     {
-        // TODO: add escape
         if (event.type == sf::Event::Closed)
         {
             // end the program
@@ -185,6 +203,10 @@ void Simulator::processInput(void)
     // use convenient static functions
     input.button_a = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
     input.button_b = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+
+    input.button_p2_a = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+    input.button_p2_b = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+
     input.restart  = sf::Keyboard::isKeyPressed(sf::Keyboard::R);
 }
 

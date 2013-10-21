@@ -10,6 +10,8 @@ extern "C" {
 extern struct input_t {
     bool button_a;
     bool button_b;
+    bool button_p2_a;
+    bool button_p2_b;
     bool restart;
 } input;
 

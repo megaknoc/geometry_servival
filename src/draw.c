@@ -179,7 +179,6 @@ void drawBars(bool use_stipple)
         bar_t *b = &game.bars[i];
         if (b->valid && !b->exploding) {
             drawBar(b, use_stipple);
-            /*printf("dist: %d\n", (int) b->dist);*/
         }
     }
 }

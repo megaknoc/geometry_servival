@@ -177,7 +177,8 @@ bool gameConfigureLevel(void)
 	}
 
 	// select field rotation based on next_div too
-	game.field_rot_incr = (1+3-next_div)/100.0f;
+	/*game.field_rot_incr = (1+3-next_div)/100.0f;*/
+    game.field_rot_incr = 0.03f;
 
 	if (next_div != game.speed_div) {
 		game.speed_div = next_div;
@@ -239,6 +240,7 @@ void gameInit(void)
 
 	initPlayers();
 
+	addPlayer();
 	addPlayer();
 
     game.bars_crushed = 0;
@@ -392,17 +394,19 @@ void gameRender(void)
     // TODO
 }
 
-static void movePlayer(player_t *p)
+static void movePlayer(player_t *p, bool left_pressed, bool right_pressed)
 {
 	assert(p != NULL && p->valid);
 
     uint8_t x,y;
 
-    static int add = 0;
-    if (input.button_a) {
-        add++;
-    } else if (input.button_b) {
-        add--;
+    // TODO
+    // XXX nothing static here!
+    // need values for multiple players
+    if (left_pressed) {
+        p->rot++;
+    } else if (right_pressed) {
+        p->rot--;
     }
 
     x = GAME_CENTER_X;
@@ -410,8 +414,8 @@ static void movePlayer(player_t *p)
 
     const int r = game.inner_radius+2;
     const float div = 5.0;
-    x += r*sin(add/div);
-    y += r*cos(add/div);
+    x += r*sin(p->rot/div);
+    y += r*cos(p->rot/div);
 
 	p->x = x;
 	p->y = y;
@@ -461,7 +465,14 @@ bool gameTick(void)
 			}
 		} else {
 			// move the player if a button is pressed
-			movePlayer(p);
+            if (i == 0) {
+                movePlayer(p, input.button_a, input.button_b);
+            } else if (i == 1) {
+                movePlayer(p, input.button_p2_a, input.button_p2_b);
+            } else {
+                // more than 2 players not yet supported
+                assert(false);
+            }
 		}
 	}
 
@@ -516,8 +527,8 @@ bool gameTick(void)
     // rotate the playfield
 	game.field_rot += game.field_rot_incr;		//Todo: Fix overflow
 
-	// 1/200th chance of changing the rotation direction
-	if (rand() % 200 < 1) {
+	// 1/250th chance of changing the rotation direction
+	if (rand() % 250 < 1) {
 		game.field_rot_incr *= -1;
 	}
 
