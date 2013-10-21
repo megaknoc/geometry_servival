@@ -1,9 +1,5 @@
 #include "game.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 bool gameSelectSpeedDiv(void);
 
 struct game_state_t game;
@@ -90,10 +86,14 @@ static void gameDeleteBar(bar_t *b) {
  * @brief Transform a bar into an explosion if the bar hits the centergon.
  * @detail May give points to the player if the player is not dead.
  */
-static void gameDestroyBar(bar_t *b)
+static void gameCrushBar(bar_t *b)
 {
     if (!game.over) {
         game.points += 1*POINT_MULTIPLIER;
+        game.bars_crushed++;
+        // TODO:
+        // add one pixel in shape
+
         gameSelectSpeedDiv();
     }
     b->timer = 11;
@@ -124,6 +124,11 @@ bool gameChangePolygon(uint8_t val)
     }
 
     gameDeleteAllBars();
+
+    game.bars_crushed = 0;
+    // TODO
+    // XXX recompute value based on shape
+    game.bars_needed = 100;
 
     game.shape = val;
     return true;
@@ -185,6 +190,9 @@ void gameInit(void)
 
     game.player_rot = 0.0f;
     game.points = 0;
+    game.bars_crushed = 0;
+
+    game.bars_needed = 100;
 
     game.over = false;
     game.dead = false;
@@ -249,7 +257,7 @@ void gameRender(void)
 
     framebufferClear(Pixel_dark);
 
-    drawBars();
+    drawBars(true);
 
     // Check the player collision now.
     // If there is already a pixel, the player is colliding with the walls.
@@ -262,24 +270,30 @@ void gameRender(void)
     // now draw the explosion effects, which should not affect the collision
     drawExplodingBars();
 
+    // draw the inner of the polygon
+    drawFill();
+
+    // player is currently a cross
     drawPlayer(game.player_x, game.player_y);
 
+    int i;
     if (game.dead) {
         if (game.dead_timer > 0) {
             game.dead_timer--;
         }
-        int i;
         for (i=0; i<10; i++) {
             // TODO: check for overflows
             // and use bigger types here
             /*drawCentergon((MAX_DEAD_TIMER-game.dead_timer)+game.inner_radius+10*i, game.shape);*/
             int tmp = MAX_DEAD_TIMER - game.dead_timer;
             tmp += game.inner_radius+10*i;
-            drawCentergon((uint8_t) tmp, game.shape);
+            drawCentergon((uint8_t) tmp, game.shape, true);
         }
     } else {
-        drawCentergon(game.inner_radius, game.shape);
+        drawCentergon(game.inner_radius, game.shape, true);
     }
+
+    drawCentergonArms();
 
     // draw the game tick
     // TODO
@@ -367,7 +381,7 @@ bool gameTick(void)
             } else {
                 // explode bars that have just reached the center
                 if (b->dist <= game.inner_radius) {
-                    gameDestroyBar(b);
+                    gameCrushBar(b);
                     continue;
                 }
                 // move other bars closer to the center

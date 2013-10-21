@@ -23,14 +23,16 @@ SRCS = src/hexagon.cpp \
 	   src/framebuffer.c \
 	   src/input.c \
 	   src/game.c \
-	   src/draw.c
+	   src/draw.c \
+	   src/util.c
 
 OBJS = build/hexagon.o \
 	   build/simulator.o \
 	   build/framebuffer.o \
 	   build/input.o \
 	   build/game.o \
-	   build/draw.o
+	   build/draw.o \
+	   build/util.o
 
 PROJECT = hexagon
 
