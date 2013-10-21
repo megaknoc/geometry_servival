@@ -32,6 +32,7 @@ extern struct game_state_t {
     float player_rot;       // rotation (CW) of the player in radian.
                             // 0    : at the top of the hexagon.
                             // 2*pi : at the top of the hexagon.
+    float field_rot;        // rotation of the field;
 
     uint8_t num_bars;       // number of bars on the playfield
     uint8_t shape;          // order of the current level's ngon: 3=tri, 4=quad, ...

@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "framebuffer.h"
 #include "game_types.h"
+#include "game.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +28,7 @@ void drawExplodingBars(void);
 
 void drawPlayer(uint8_t x, uint8_t y);
 void drawCentergon(uint8_t outer_radius, uint8_t order);
+void calculateRotation(int *x, int *y);
 
 extern const uint8_t Pixel_dark;
 extern const uint8_t Pixel_bright;

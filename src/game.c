@@ -393,7 +393,12 @@ bool gameTick(void)
     }
 
     // rotate the playfield
-    // TODO
+    // TODO 
+    
+    game.field_rot += 0.03f;    //Todo: Fix overflow
+        
+    
+    
 
     // move the plafield nearer to the player
     // TODO

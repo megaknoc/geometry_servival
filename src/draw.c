@@ -14,6 +14,7 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
     int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
     int err = dx+dy, e2; /* error value e_xy */
 
+    
     while(1) {
         framebufferSet(x0, y0, val);
         if (x0==x1 && y0==y1) break;
@@ -30,16 +31,25 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
 void drawBar(bar_t *bar)
 {
     assert(bar != NULL && bar->valid);
-    assert(bar->sector < game.shape);
+   // assert(bar->sector < game.shape);
     assert(!bar->exploding);
 
     int8_t cs[2*(game.shape+1)];
     generateCorners(cs, bar->dist, game.shape);
-
+    
     const int i = bar->sector;
+    
+    int x0 = cs[2*i+0];
+    int y0 = cs[2*i+1];
+    int x1 = cs[2*i+2];
+    int y1 = cs[2*i+3];
+    
+    calculateRotation(&x0, &y0);
+    calculateRotation(&x1, &y1);
+    
     drawLine(
-        GAME_CENTER_X + cs[2*i+0], GAME_CENTER_Y + cs[2*i+1],
-        GAME_CENTER_X + cs[2*i+2], GAME_CENTER_Y + cs[2*i+3],
+        GAME_CENTER_X + x0, GAME_CENTER_Y + y0,
+        GAME_CENTER_X + x1, GAME_CENTER_Y + y1,
         Pixel_bright);
 }
 
@@ -129,13 +139,40 @@ void drawCentergon(uint8_t outer_radius, uint8_t order)
 {
     int8_t corners[2*(order+1)];
     generateCorners(corners, outer_radius, order);
-
+    
     int i;
     for (i=0; i<2*(order-1)+1; i += 2) {
+        
+        int x0 = corners[i];
+        int y0 = corners[i+1];
+        int x1 = corners[i+2];
+        int y1 = corners[i+3];
+        calculateRotation(&x0, &y0);
+        calculateRotation(&x1, &y1);
+        
         drawLine(
-            GAME_CENTER_X + corners[i],   GAME_CENTER_Y + corners[i+1],
-            GAME_CENTER_X + corners[i+2], GAME_CENTER_Y + corners[i+3],
+            GAME_CENTER_X + x0,   GAME_CENTER_Y + y0,
+            GAME_CENTER_X + x1, GAME_CENTER_Y + y1,
             Pixel_bright);
     }
 }
+
+
+
+void calculateRotation(int *x, int *y)
+{
+    float matrix_a = cos(game.field_rot);
+    float matrix_b = -sin(game.field_rot);
+    float matrix_c = sin(game.field_rot);
+    float matrix_d = cos(game.field_rot);
+    
+    float rotated_x = (matrix_a  * (*x) + matrix_b * (*y));
+    float rotated_y = (matrix_c *  (*x) + matrix_d * (*y));
+    
+    
+    *x = (int)rotated_x;
+    *y = (int)rotated_y;
+}
+
+
 
