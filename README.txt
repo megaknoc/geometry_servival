@@ -7,8 +7,13 @@ OpenGL
 Control
 -------
 
-Use left and right arrow keys to move the player. Press R to restart the game
-when the player is dead.
+<Left>/<Right> arrow keys to move the player.
+'A'/'E' to move player 2 (if added to the game)
+'R' to restart the game when all players are dead.
+'I' inverts the colors.
+<Up>/<Down> to cycle through color schemes
+
+(not yet implemented: '+'/'-' increases/decreases the virtual pixel size.)
 
 Game organization
 -----------------

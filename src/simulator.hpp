@@ -20,8 +20,14 @@ class Simulator {
     sf::Shader shader;
     sf::Color bright;
     sf::Color dark;
+    std::vector<sf::Color> colorschemes; // pair of colorschemes. first color is the brighter color
+    int colorscheme;
+    bool colors_inverted;
     bool running;
-    sf::VertexArray pixel_quads; // pixkels are represented by a quad array
+    sf::VertexArray pixel_quads;    // pixkls are represented by a quad array
+
+    void updateColors(void);
+    void swapColors(void);
 
     public:
     // TODO: get useful arguments

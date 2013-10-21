@@ -16,7 +16,7 @@
 
 // pixel padding is not yet properly implemented
 #define PIXEL_PADDING               0
-#define PIXEL_SIZE                  3
+#define PIXEL_SIZE                  4
 
 // maximum amount of bars that can be created at a time
 #define MAX_BARS                    200

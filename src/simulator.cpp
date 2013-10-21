@@ -116,16 +116,40 @@ Simulator::Simulator() : window(
     sf::Style::Default,
     sf::ContextSettings(32)),
 
-    // nice bright yellowish-green
-    bright(sf::Color(0xc4, 0xff, 0x18)),
-
-    // nice daaaark green
-    dark(sf::Color(0xc, 0x10, 0xc)),
+    colorscheme(0),
+    colors_inverted(false),
 
     pixel_quads(sf::Quads, 4*FRAMEBUFFER_TOTAL_PIXELS)
 {
     window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(25);
+
+    colorschemes.push_back(sf::Color(0xc4, 0xff, 0x18));    // nice bright yellowish-green
+    colorschemes.push_back(sf::Color(0x0c, 0x10, 0x0c));    // nice daaaark green
+
+    colorschemes.push_back(sf::Color(0xad, 0xf7, 0xd8));    // nice tuerkis-blue
+    colorschemes.push_back(sf::Color(0x10, 0x16, 0x16));    // daaaaark blue
+
+    colorschemes.push_back(sf::Color(0xf6, 0x2b, 0x22));    // nice evil-red
+    colorschemes.push_back(sf::Color(0x02, 0x12, 0x05));    // nice total dark red
+
+    colorschemes.push_back(sf::Color::White);
+    colorschemes.push_back(sf::Color::Black);
+
+    colorschemes.push_back(sf::Color::Red);
+    colorschemes.push_back(sf::Color::Black);
+
+    colorschemes.push_back(sf::Color::Green);
+    colorschemes.push_back(sf::Color::Black);
+
+    colorschemes.push_back(sf::Color::Blue);
+    colorschemes.push_back(sf::Color::Black);
+
+    colorschemes.push_back(sf::Color::Yellow);
+    colorschemes.push_back(sf::Color::Black);
+
+    updateColors();
+
 
     // load both shaders
     //if (!shader.loadFromFile("data/shader/shader.vert", "data/shader/shader.frag")) {
@@ -177,6 +201,24 @@ sf::Vertex* Simulator::getPixelVertices(uint8_t x, uint8_t y)
     assert(i < (4 * FRAMEBUFFER_TOTAL_PIXELS));
     return &pixel_quads[i];
 }
+void Simulator::updateColors(void)
+{
+    bright  = colorschemes.at(2*colorscheme  );
+    dark    = colorschemes.at(2*colorscheme+1);
+
+    if (colors_inverted) {
+        swapColors();
+    }
+
+    calculateFramebuffer(true);
+}
+
+void Simulator::swapColors(void)
+{
+    sf::Color tmp = bright;
+    bright = dark;
+    dark = tmp;
+}
 
 Simulator::~Simulator()
 {
@@ -188,16 +230,29 @@ void Simulator::processInput(void)
     sf::Event event;
     while (window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
-        {
+        if (event.type == sf::Event::Closed) {
             // end the program
             running = false;
-        }
-        else if (event.type == sf::Event::Resized)
-        {
+        } else if (event.type == sf::Event::Resized) {
             // adjust the viewport when the window is resized
             glViewport(0, 0, event.size.width, event.size.height);
+        } else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::I) {
+                colors_inverted = !colors_inverted;
+                updateColors();
+            } else if (event.key.code == sf::Keyboard::Up) {
+                if (colorscheme < (colorschemes.size()/2)-1) {
+                    colorscheme++;
+                    updateColors();
+                }
+            } else if (event.key.code == sf::Keyboard::Down) {
+                if (colorscheme > 0) {
+                    colorscheme--;
+                    updateColors();
+                }
+            }
         }
+
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
