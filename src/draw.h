@@ -26,10 +26,11 @@ void drawLine(int x0, int y0, int x1, int y1, int val);
 void drawBar(bar_t *bar, bool use_stipple);
 void drawBars(bool use_stipple);
 void drawExplodingBars(void);
+void drawFill(void);
 
 void drawPlayer(uint8_t x, uint8_t y);
-void drawCentergon(uint8_t outer_radius, uint8_t order);
-void drawCentergonCorners(uint8_t outer_radius, uint8_t order);
+void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines);
+void drawCentergonArms(void);
 
 extern const uint8_t Pixel_dark;
 extern const uint8_t Pixel_bright;

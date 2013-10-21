@@ -27,8 +27,14 @@ typedef struct bar_t {
 } bar_t;
 
 extern struct game_state_t {
-    uint32_t ticks;         // game tick
-    uint32_t points;        // player gets one point for each bar
+    uint32_t ticks;         // Game tick
+    uint32_t points;        // Player gets one point for each crushed bar.
+    uint32_t bars_crushed;  // Bars crushed this level. Reset on shape change.
+    uint32_t bars_needed ;  // How many crushed bars are needed to advance shape
+                            // Must be recomputed to the amount of pixels that
+                            // fills the current centergon each time shape
+                            // changes
+
     float player_rot;       // rotation (CW) of the player in radian.
                             // 0    : at the top of the hexagon.
                             // 2*pi : at the top of the hexagon.
@@ -40,7 +46,7 @@ extern struct game_state_t {
     uint8_t inner_radius;   // inner radius
     uint8_t speed_div;      // divider for the speed of bars
     bool over;              // game is over
-    bool dead;              // if true, player collided with walls
+    bool dead;              // if true, player collided with bars
     uint8_t dead_timer;     // how long is the player dead
     bar_t bars[MAX_BARS];   // buffer for all bars
 } game;

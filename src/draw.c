@@ -193,38 +193,91 @@ void drawPlayer(uint8_t x, uint8_t y)
 /**
  * @brief Draw the $gon at the center.
  * @detail The *gon changes with the current level $gon.
+ * @param[in] with_lines If true, draw lines between the corners of the hexagon.
  */
-void drawCentergon(uint8_t outer_radius, uint8_t order)
+void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines)
 {
     int8_t corners[2*(order+1)];
     generateCorners(corners, outer_radius, order);
 
     int i;
+    // TODO: whats's that number i<foo ?
     for (i=0; i<2*(order-1)+1; i += 2) {
-        drawLine(
-            GAME_CENTER_X + corners[i],   GAME_CENTER_Y + corners[i+1],
-            GAME_CENTER_X + corners[i+2], GAME_CENTER_Y + corners[i+3],
-            Pixel_bright);
+        const int final_coords[] = {
+            GAME_CENTER_X + corners[i],     GAME_CENTER_Y + corners[i+1],
+            GAME_CENTER_X + corners[i+2],   GAME_CENTER_Y + corners[i+3]
+        };
+        if (with_lines) {
+            drawLine(
+                final_coords[0], final_coords[1],
+                final_coords[2], final_coords[3],
+                Pixel_bright);
+        } else {
+            framebufferSet(final_coords[0], final_coords[1], Pixel_bright);
+            framebufferSet(final_coords[2], final_coords[3], Pixel_bright);
+        }
     }
 }
 
-void drawCentergonCorners(uint8_t outer_radius, uint8_t order)
+/**
+ * @brief Draws the filling of the inner polygon.
+ * @detail Filling is accomplished by OR'ing the framebuffer with the fill
+ * buffer.
+ */
+void drawFill(void)
 {
-    int8_t corners[2*(order+1)];
-    generateCorners(corners, outer_radius, order);
+    // TODO:
+    // implement me
+}
 
+/**
+ * @brief Draw the arms of the centergon.
+ * @detail They are waving and stretching out, until the bars come too close.
+ */
+void drawCentergonArms(void)
+{
+    // default value that is used if bars are too far away
+    const uint8_t max_value = 20;
+    uint8_t min_bar_dist = max_value;
     int i;
-    for (i=0; i<2*(order-1)+1; i += 2) {
 
-        framebufferSet(
-            GAME_CENTER_X + corners[i],
-            GAME_CENTER_Y + corners[i+1],
-            Pixel_bright);
+    // compute minimum distance of all current bars
+    for (i=0; i<MAX_BARS; i++) {
+        bar_t *b = &game.bars[i];
+        if (b->valid && !b->exploding) {
+            if (b->dist < min_bar_dist) {
+                min_bar_dist = b->dist;
+            }
+        }
+    }
 
-        framebufferSet(
-            GAME_CENTER_X + corners[i+2],
-            GAME_CENTER_Y + corners[i+3],
-            Pixel_bright);
+    const int stretch = 6 + min_bar_dist;
+
+    // The effective factor is low pass filtered and mixed with a sine to look
+    // more dynamic
+    static int factor = 10;
+    // TODO:
+    // make period shorter, if the less points are needed for level-up
+    factor = ((5.0f*factor)/6.0f + (stretch/6.0f));
+
+    const int eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);
+
+    /*factor = stretch * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
+
+    // Show a few marker points as the arms
+    for (i=0; i<4; i++) {
+        uint32_t tmp = 0;
+        tmp += eff_factor * pow(i, 2);
+        /*tmp += factor*(i*i)/3;*/
+        tmp /= 40;
+        tmp += i;
+        if (game.over && game.dead) {
+            tmp /= 1+(MAX_DEAD_TIMER - game.dead_timer);
+        }
+        if (!(game.over && game.dead && game.dead_timer == 0)) {
+            tmp += game.inner_radius;
+            drawCentergon(tmp, game.shape, false);
+        }
     }
 }
 
