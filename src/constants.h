@@ -28,6 +28,8 @@
 #define MAX_BAR_SPEED_DIVIDER       5
 
 #define MAX_DEAD_TIMER              20
+#define GAME_OVER_ANIM_DELAY        15
+#define MAX_ALL_DEAD_TIMER          (GAME_OVER_ANIM_DELAY + 20)
 #define POINT_MULTIPLIER            1
 
 // 1      : instant updates of pixels on the screen

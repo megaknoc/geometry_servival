@@ -90,7 +90,7 @@ uint32_t patternFromDist(uint8_t s)
 void drawBar(bar_t *bar, bool use_stipple)
 {
     assert(bar != NULL && bar->valid);
-   // assert(bar->sector < game.shape);
+    // assert(bar->sector < game.shape);
     assert(!bar->exploding);
 
     int8_t cs[2*(game.shape+1)];
@@ -189,17 +189,40 @@ void drawBars(bool use_stipple)
  */
 void drawPlayer(player_t *p)
 {
-	assert(p != NULL && p->valid);
+    assert(p != NULL && p->valid);
+
     const uint8_t val = Pixel_bright;
+    uint8_t x = p->x;
+    uint8_t y = p->y;
 
-	uint8_t x = p->x;
-	uint8_t y = p->y;
+    if (p->dead) {
+        if (p->dead_timer == 0) {
+            // dont draw, if dead for too long time.
+            return;
+        }
+        // else, draw as signle pixel
+        framebufferSet(x,   y,   val);
 
-    framebufferSet(x,   y,   val);
-    framebufferSet(x-1, y,   val);
-    framebufferSet(x,   y-1, val);
-    framebufferSet(x+1, y,   val);
-    framebufferSet(x,   y+1, val);
+        const uint8_t move = MAX_DEAD_TIMER - p->dead_timer;
+        const uint8_t move_h = (2*move) / 3;
+
+        framebufferSet(x-move,   y,        val);
+        framebufferSet(x,        y-move,   val);
+        framebufferSet(x+move,   y,        val);
+        framebufferSet(x,        y+move,   val);
+
+        framebufferSet(x-move_h, y-move_h, val);
+        framebufferSet(x+move_h, y-move_h, val);
+        framebufferSet(x-move_h, y+move_h, val);
+        framebufferSet(x+move_h, y+move_h, val);
+
+    } else {
+        framebufferSet(x,   y,   val);
+        framebufferSet(x-1, y,   val);
+        framebufferSet(x,   y-1, val);
+        framebufferSet(x+1, y,   val);
+        framebufferSet(x,   y+1, val);
+    }
 }
 
 /**
@@ -258,8 +281,8 @@ void drawFill(void)
  */
 void drawCentergonArms(void)
 {
-	// TODO:
-	// save / compute this values somewhere
+    // TODO:
+    // save / compute this values somewhere
 
     // default value that is used if bars are too far away
     const uint8_t max_value = 30;
@@ -285,10 +308,10 @@ void drawCentergonArms(void)
     // make period shorter, if the less points are needed for level-up
     factor = ((5.0f*factor)/6.0f + (stretch/6.0f));
 
-	if (game.over && game.all_dead && game.all_dead_timer != 0) {
-		/*const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
-		factor *= (1.0f+sin(2.0f*M_PI*game.ticks/13)/2.0f);
-	}
+    if (game.over && game.all_dead && game.all_dead_timer != 0) {
+        /*const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
+        factor *= (1.0f+sin(2.0f*M_PI*game.ticks/13)/2.0f);
+    }
 
     // Show a few marker points as the arms
     for (i=0; i<4; i++) {
@@ -298,17 +321,15 @@ void drawCentergonArms(void)
         tmp /= 40;
         tmp += i;
         if (game.over && game.all_dead) {
-            tmp /= 1+(MAX_DEAD_TIMER - game.all_dead_timer);
+            tmp /= 1+(MAX_ALL_DEAD_TIMER - game.all_dead_timer);
         }
-		// TODO: make this clearer
+        // TODO: make this clearer
         if (!(game.over && game.all_dead && game.all_dead_timer == 0)) {
             tmp += game.inner_radius;
             drawCentergon(tmp, game.shape, false);
         }
     }
 }
-
-
 
 void calculateRotation(int *x, int *y)
 {
@@ -320,10 +341,7 @@ void calculateRotation(int *x, int *y)
     float rotated_x = (matrix_a  * (*x) + matrix_b * (*y));
     float rotated_y = (matrix_c *  (*x) + matrix_d * (*y));
 
-
     *x = (int)rotated_x;
     *y = (int)rotated_y;
 }
-
-
 

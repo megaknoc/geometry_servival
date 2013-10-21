@@ -18,6 +18,8 @@ class Simulator {
     private:
     sf::RenderWindow window;
     sf::Shader shader;
+    sf::Color bright;
+    sf::Color dark;
     bool running;
     sf::VertexArray pixel_quads; // pixkels are represented by a quad array
 

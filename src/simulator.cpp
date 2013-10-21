@@ -20,96 +20,94 @@ void Simulator::drawRectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const 
  */
 void Simulator::calculateFramebuffer(bool force_pixels)
 {
-        int x,y;
-        for (x=0; x<FRAMEBUFFER_WIDTH; x++) {
-            for (y=0; y<FRAMEBUFFER_HEIGHT; y++) {
-                sf::Vertex *v = getPixelVertices(x, y);
-                uint8_t *px = framebufferPixel(x, y);
+    int x,y;
+    for (x=0; x<FRAMEBUFFER_WIDTH; x++) {
+        for (y=0; y<FRAMEBUFFER_HEIGHT; y++) {
+            sf::Vertex *v = getPixelVertices(x, y);
+            uint8_t *px = framebufferPixel(x, y);
 
-                const sf::Color old = v[0].color;
-                sf::Color clr = *px > 0 ? sf::Color::White : sf::Color::Black;
-                if (old == clr) {
-                    continue;
-                }
-                if (!force_pixels) {
-                    // mix colors to give LCD appeareance
-                    clr = *px > 0 ? sf::Color::White : sf::Color::Black;
+            const sf::Color old = v[0].color;
+            sf::Color clr = *px > 0 ? bright : dark;
+            if (old == clr) {
+                continue;
+            }
+            if (!force_pixels) {
+                // mix colors to give LCD appeareance
+                const float a = LCD_PIXEL_GHOST_FACTOR;
+                clr.r = clr.r*a + old.r*(1.0f-a);
+                clr.g = clr.g*a + old.g*(1.0f-a);
+                clr.b = clr.b*a + old.b*(1.0f-a);
+            }
 
-                    const float a = LCD_PIXEL_GHOST_FACTOR;
-                    clr.r = clr.r*a + old.r*(1.0f-a);
-                    clr.g = clr.g*a + old.g*(1.0f-a);
-                    clr.b = clr.b*a + old.b*(1.0f-a);
-                }
-
-                int j;
-                for (j=0; j<4; j++) {
-                    v[j].color = clr;
-                }
+            int j;
+            for (j=0; j<4; j++) {
+                v[j].color = clr;
             }
         }
+    }
 }
 
 void Simulator::showFramebuffer(void)
 {
-        // clear the buffers
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // clear the buffers
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // set bg color
-        window.clear(sf::Color::Green);
-        //window.clear(sf::Color::Black);
-        //window.clear(sf::Color::White);
+    // set bg color
+    window.clear(sf::Color::Green);
+    //window.clear(sf::Color::Black);
+    //window.clear(sf::Color::White);
 
-        // render each framebuffer pixel
-        // XXX
-        // TODO
+    // render each framebuffer pixel
+    // XXX
+    // TODO
 #if 0
-        const uint8_t px_size = 8;
-        int x,y;
-        for (x=0; x<FRAMEBUFFER_WIDTH; x++) {
-            for (y=0; y<FRAMEBUFFER_HEIGHT; y++) {
-                uint8_t *px = framebufferPixel(x, y);
-                //const sf::Color c = *px < (0xff/2) ? sf::Color(0, 0, 0) : sf::Color(0xff, 0xff, 0xff);
-                const sf::Color c = sf::Color(0xff, 0xff, 0xff);
-                // colorize the pixels
+    const uint8_t px_size = 8;
+    int x,y;
+    for (x=0; x<FRAMEBUFFER_WIDTH; x++) {
+        for (y=0; y<FRAMEBUFFER_HEIGHT; y++) {
+            uint8_t *px = framebufferPixel(x, y);
+            //const sf::Color c = *px < (0xff/2) ? sf::Color(0, 0, 0) : sf::Color(0xff, 0xff, 0xff);
+            const sf::Color c = sf::Color(0xff, 0xff, 0xff);
+            // colorize the pixels
 
-                // now, draw a square for each pixel
-                //drawRectangle(x*px_size, y*px_size, px_size, px_size, c);
-            }
+            // now, draw a square for each pixel
+            //drawRectangle(x*px_size, y*px_size, px_size, px_size, c);
         }
+    }
 #endif
 
-        // draw the vertex array
-        window.draw(pixel_quads);
+    // draw the vertex array
+    window.draw(pixel_quads);
 
-        //glMatrixMode(GL_PROJECTION);
-        //glMatrixMode(GL_MODELVIEW);
-        //glViewport(0, 0, (GLsizei) WIDTH, (GLsizei) HEIGHT);
-        //glLoadIdentity();
-        //gluPerspective(90.0, 1.0, 0.001, 1000.0);
+    //glMatrixMode(GL_PROJECTION);
+    //glMatrixMode(GL_MODELVIEW);
+    //glViewport(0, 0, (GLsizei) WIDTH, (GLsizei) HEIGHT);
+    //glLoadIdentity();
+    //gluPerspective(90.0, 1.0, 0.001, 1000.0);
 
-        // move camera away
-        //glTranslatef(0.0f, 0.0f, -10.0f*((1+cos(tick/20.0f))/2.0f));
-        //glTranslatef(0.0f, 0.0f, -0.5f);
-        //glTranslatef(0.0f, 0.0f, -10.0f);
+    // move camera away
+    //glTranslatef(0.0f, 0.0f, -10.0f*((1+cos(tick/20.0f))/2.0f));
+    //glTranslatef(0.0f, 0.0f, -0.5f);
+    //glTranslatef(0.0f, 0.0f, -10.0f);
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        //glDisable(GL_CULL_FACE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glDisable(GL_CULL_FACE);
 
-        //glClearDepth(0.0f);
-        //glPushMatrix();
-        //shader.setParameter("tick", (float)tick);
+    //glClearDepth(0.0f);
+    //glPushMatrix();
+    //shader.setParameter("tick", (float)tick);
 
-        // bind the shader
-        //sf::Shader::bind(&shader);
+    // bind the shader
+    //sf::Shader::bind(&shader);
 
-        // draw the monster: one sphere with dents
-        // TODO: draw sth.
+    // draw the monster: one sphere with dents
+    // TODO: draw sth.
 
-        //glPopMatrix();
+    //glPopMatrix();
 
-        // bind no shader
-        //sf::Shader::bind(NULL);
-        window.display();
+    // bind no shader
+    //sf::Shader::bind(NULL);
+    window.display();
 }
 
 Simulator::Simulator() : window(
@@ -118,6 +116,12 @@ Simulator::Simulator() : window(
     sf::Style::Default,
     sf::ContextSettings(32)),
 
+    // nice bright yellowish-green
+    bright(sf::Color(0xc4, 0xff, 0x18)),
+
+    // nice daaaark green
+    dark(sf::Color(0xc, 0x10, 0xc)),
+
     pixel_quads(sf::Quads, 4*FRAMEBUFFER_TOTAL_PIXELS)
 {
     window.setVerticalSyncEnabled(true);
@@ -125,8 +129,8 @@ Simulator::Simulator() : window(
 
     // load both shaders
     //if (!shader.loadFromFile("data/shader/shader.vert", "data/shader/shader.frag")) {
-        //std::cerr<<"Could not load shaders from file!"<<::std::endl;
-        //exit(-1);
+    //std::cerr<<"Could not load shaders from file!"<<::std::endl;
+    //exit(-1);
     //}
     //shader.setParameter("texture", sf::Shader::CurrentTexture);
 
