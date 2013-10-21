@@ -29,7 +29,7 @@ void drawBars(bool use_stipple);
 void drawExplodingBars(void);
 void drawFill(void);
 
-void drawPlayer(uint8_t x, uint8_t y);
+void drawPlayer(player_t *p);
 void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines);
 void drawCentergonArms(void);
 void calculateRotation(int *x, int *y);

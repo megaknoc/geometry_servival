@@ -82,6 +82,17 @@ static void gameDeleteBar(bar_t *b) {
     game.num_bars--;
 }
 
+void addPointsToAlivePlayers(uint32_t points)
+{
+	int i;
+	for (i=0; i<MAX_PLAYERS; i++) {
+		player_t *p = &game.players[i];
+		if (p->valid && !p->dead) {
+			p->points += points * POINT_MULTIPLIER;
+		}
+	}
+}
+
 /**
  * @brief Transform a bar into an explosion if the bar hits the centergon.
  * @detail May give points to the player if the player is not dead.
@@ -89,7 +100,7 @@ static void gameDeleteBar(bar_t *b) {
 static void gameCrushBar(bar_t *b)
 {
     if (!game.over) {
-        game.points += 1*POINT_MULTIPLIER;
+		addPointsToAlivePlayers(1);
         game.bars_crushed++;
         // TODO:
         // add one pixel in shape
@@ -134,6 +145,13 @@ bool gameChangePolygon(uint8_t val)
     return true;
 }
 
+void changeLevel(void)
+{
+	game.bars_crushed = 0;
+	/*gameChangePolygon(game.shape+1);*/
+	gameChangePolygon((rand() % 5) + MIN_SHAPE);
+}
+
 /**
  * @brief Select the speed of the bars depending on the player's points.
  * @returns true if the divider changed.
@@ -159,15 +177,41 @@ bool gameSelectSpeedDiv(void)
 #endif
 
     // next level each 100 points
-    if (game.points % 50 == 0) {
-        /*gameChangePolygon(game.shape+1);*/
-        gameChangePolygon((rand() % 5) + MIN_SHAPE);
+    if (game.bars_crushed == 50) {
+		changeLevel();
     }
 
     /*return last_div != game.speed_div;*/
     return false;
 }
 
+void initPlayers(void)
+{
+	int i;
+	for (i=0; i<MAX_PLAYERS; i++) {
+		player_t *p = &game.players[i];
+		p->valid = false;
+	}
+}
+
+// return false if no more space in buffer for another player
+bool addPlayer(void)
+{
+	int i;
+	for (i=0; i<MAX_PLAYERS; i++) {
+		player_t *p = &game.players[i];
+		if (!p->valid) {
+			p->valid = true;
+			p->points = 0;
+			p->rot = 0.0f;
+			p->dead = false;
+			p->x = 0;
+			p->y = 0;
+			return true;
+		}
+	}
+	return false;
+}
 
 /**
  * @brief Initialize the game state.
@@ -188,14 +232,17 @@ void gameInit(void)
     game.speed_div = 1;
     game.num_bars = 0;
 
-    game.player_rot = 0.0f;
-    game.points = 0;
-    game.bars_crushed = 0;
+	game.field_rot = 0.0f;
+	game.field_rot_dir = 1;
 
+	initPlayers();
+
+	addPlayer();
+
+    game.bars_crushed = 0;
     game.bars_needed = 100;
 
     game.over = false;
-    game.dead = false;
 
     game.inner_radius = 8;
     game.shape = MIN_SHAPE;
@@ -208,16 +255,20 @@ void gameInit(void)
     framebufferClear(Pixel_dark);
 }
 
-static bool playerCollidesWithBars(uint8_t x, uint8_t y)
+static bool playerCollidesWithBars(player_t *p)
 {
+	// TODO: use the player's shape here
+	assert(p != NULL && p->valid && !p->dead);
 #define CHECK_PIXEL(xadd, yadd) \
-    p = framebufferPixel(x+(xadd), y+(yadd)); \
-    if (*p != Pixel_dark) return true; \
+    pixel = framebufferPixel(p->x+(xadd), p->y+(yadd)); \
+    if (*pixel != Pixel_dark) return true; \
+
     // assumes the player is always a cross
     //  #
     // ###
     //  #
-    uint8_t *p;
+    uint8_t *pixel;
+
     CHECK_PIXEL( 0,  0);
     CHECK_PIXEL(-1,  0);
     CHECK_PIXEL( 0, -1);
@@ -227,12 +278,34 @@ static bool playerCollidesWithBars(uint8_t x, uint8_t y)
     return false;
 }
 
-void playerSetDead(void)
+void playerSetDead(player_t *p)
 {
-    game.over = true;
-    game.dead = true;
-    game.dead_timer = MAX_DEAD_TIMER;
+	assert(p != NULL && p->valid && !p->dead);
+	assert(!game.over);
+
+    /*game.over = true;*/
+    p->dead = true;
+    p->dead_timer = MAX_DEAD_TIMER;
+
+	// check whether the game is over now
+	bool still_alive = false;
+
+	int i;
+	for (i=0; i<MAX_PLAYERS; i++) {
+		player_t *p = &game.players[i];
+		if (p->valid && !p->dead) {
+			still_alive = true;
+			break;
+		}
+	}
+
+	if (!still_alive) {
+		game.over = true;
+		game.all_dead = true;
+		game.all_dead_timer = MAX_DEAD_TIMER;
+	}
 }
+
 /**
  * @brief Render the game objects to the game framebuffer.
  */
@@ -262,10 +335,16 @@ void gameRender(void)
     // Check the player collision now.
     // If there is already a pixel, the player is colliding with the walls.
     if (!game.over) {
-        if (playerCollidesWithBars(game.player_x, game.player_y)) {
-            playerSetDead();
-        }
-    }
+		int i;
+		for (i=0; i<MAX_PLAYERS; i++) {
+			player_t *p = &game.players[i];
+			if (p->valid && !p->dead) {
+				if (playerCollidesWithBars(p)) {
+					playerSetDead(p);
+				}
+			}
+		}
+	}
 
     // now draw the explosion effects, which should not affect the collision
     drawExplodingBars();
@@ -274,24 +353,29 @@ void gameRender(void)
     drawFill();
 
     // player is currently a cross
-    drawPlayer(game.player_x, game.player_y);
+	// TODO: draw all players
+	int j;
+	for (j=0; j<MAX_PLAYERS; j++) {
+		player_t *p = &game.players[j];
+		if (!p->valid) {
+			continue;
+		}
+		drawPlayer(p);
 
-    int i;
-    if (game.dead) {
-        if (game.dead_timer > 0) {
-            game.dead_timer--;
-        }
-        for (i=0; i<10; i++) {
-            // TODO: check for overflows
-            // and use bigger types here
-            /*drawCentergon((MAX_DEAD_TIMER-game.dead_timer)+game.inner_radius+10*i, game.shape);*/
-            int tmp = MAX_DEAD_TIMER - game.dead_timer;
-            tmp += game.inner_radius+10*i;
-            drawCentergon((uint8_t) tmp, game.shape, true);
-        }
-    } else {
-        drawCentergon(game.inner_radius, game.shape, true);
-    }
+		int i;
+		if (p->dead) {
+			for (i=0; i<10; i++) {
+				// TODO: check for overflows
+				// and use bigger types here
+				/*drawCentergon((MAX_DEAD_TIMER-game.dead_timer)+game.inner_radius+10*i, game.shape);*/
+				int tmp = MAX_DEAD_TIMER - p->dead_timer;
+				tmp += game.inner_radius+10*i;
+				drawCentergon((uint8_t) tmp, game.shape, true);
+			}
+		} else {
+			drawCentergon(game.inner_radius, game.shape, true);
+		}
+	}
 
     drawCentergonArms();
 
@@ -305,8 +389,10 @@ void gameRender(void)
     // TODO
 }
 
-static void movePlayer(void)
+static void movePlayer(player_t *p)
 {
+	assert(p != NULL && p->valid);
+
     uint8_t x,y;
 
     static int add = 0;
@@ -324,8 +410,8 @@ static void movePlayer(void)
     x += r*sin(add/div);
     y += r*cos(add/div);
 
-    game.player_x = x;
-    game.player_y = y;
+	p->x = x;
+	p->y = y;
 }
 
 /**
@@ -358,16 +444,33 @@ bool isSectorOk(uint8_t s)
  */
 bool gameTick(void)
 {
-    // move the player if a button is pressed
-    if (!game.dead) {
-        movePlayer();
-    }
+	int i;
+	for (i=0; i<MAX_PLAYERS; i++) {
+		player_t *p = &game.players[i];
+		if (!p->valid) {
+			continue;
+		}
+		// tick dead players
+		if (p->dead) {
+			if (p->dead_timer > 0) {
+				p->dead_timer--;
+			}
+		} else {
+			// move the player if a button is pressed
+			movePlayer(p);
+		}
+	}
+
+	if (game.over && game.all_dead) {
+		if (game.all_dead_timer > 0) {
+			game.all_dead_timer--;
+		}
+	}
 
     // check whether the player collides with bars
     // TODO
 
     // move each bar closer to the center
-    int i;
     for (i=0; i<MAX_BARS; i++) {
         bar_t *b = &game.bars[i];
         if (b->valid) {
@@ -407,12 +510,11 @@ bool gameTick(void)
     }
 
     // rotate the playfield
-    // TODO 
-    
-    game.field_rot += 0.03f;    //Todo: Fix overflow
-        
-    
-    
+    game.field_rot += game.field_rot_dir * 0.03f;    //Todo: Fix overflow
+
+	if (rand() % 300 < 1) {
+		game.field_rot_dir *= -1;
+	}
 
     // move the plafield nearer to the player
     // TODO

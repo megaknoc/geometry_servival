@@ -20,6 +20,7 @@
 
 // maximum amount of bars that can be created at a time
 #define MAX_BARS                    200
+#define MAX_PLAYERS                 10
 
 // minimum shape (less than triangle makes not much sense)
 #define MIN_SHAPE                   3

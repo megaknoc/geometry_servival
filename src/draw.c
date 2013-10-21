@@ -14,7 +14,7 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
     int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
     int err = dx+dy, e2; /* error value e_xy */
 
-    
+
     while(1) {
         framebufferSet(x0, y0, val);
         if (x0==x1 && y0==y1) break;
@@ -95,14 +95,14 @@ void drawBar(bar_t *bar, bool use_stipple)
 
     int8_t cs[2*(game.shape+1)];
     generateCorners(cs, bar->dist, game.shape);
-    
+
     const int i = bar->sector;
-    
+
     int x0 = cs[2*i+0];
     int y0 = cs[2*i+1];
     int x1 = cs[2*i+2];
     int y1 = cs[2*i+3];
-    
+
     calculateRotation(&x0, &y0);
     calculateRotation(&x1, &y1);
 
@@ -188,9 +188,13 @@ void drawBars(bool use_stipple)
  * @brief Draw the player at coordinates (x, y) looking in direction.
  * @detail
  */
-void drawPlayer(uint8_t x, uint8_t y)
+void drawPlayer(player_t *p)
 {
+	assert(p != NULL && p->valid);
     const uint8_t val = Pixel_bright;
+
+	uint8_t x = p->x;
+	uint8_t y = p->y;
 
     framebufferSet(x,   y,   val);
     framebufferSet(x-1, y,   val);
@@ -208,16 +212,16 @@ void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines)
 {
     int8_t corners[2*(order+1)];
     generateCorners(corners, outer_radius, order);
-    
+
     int i;
     // TODO: whats's that number i<foo ?
     for (i=0; i<2*(order-1)+1; i += 2) {
-        
+
         int x0 = corners[i];
         int y0 = corners[i+1];
         int x1 = corners[i+2];
         int y1 = corners[i+3];
-        
+
         calculateRotation(&x0, &y0);
         calculateRotation(&x1, &y1);
 
@@ -225,7 +229,7 @@ void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines)
             GAME_CENTER_X + x0,     GAME_CENTER_Y + y0,
             GAME_CENTER_X + x1,   GAME_CENTER_Y + y1
         };
-        
+
         if (with_lines) {
             drawLine(
                 final_coords[0], final_coords[1],
@@ -255,6 +259,9 @@ void drawFill(void)
  */
 void drawCentergonArms(void)
 {
+	// TODO:
+	// save / compute this values somewhere
+
     // default value that is used if bars are too far away
     const uint8_t max_value = 30;
     uint8_t min_bar_dist = max_value;
@@ -279,8 +286,10 @@ void drawCentergonArms(void)
     // make period shorter, if the less points are needed for level-up
     factor = ((5.0f*factor)/6.0f + (stretch/6.0f));
 
-    /*const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
-    factor *= (1.0f+sin(2.0f*M_PI*game.ticks/13)/2.0f);
+	if (game.over && game.all_dead && game.all_dead_timer != 0) {
+		/*const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
+		factor *= (1.0f+sin(2.0f*M_PI*game.ticks/13)/2.0f);
+	}
 
     // Show a few marker points as the arms
     for (i=0; i<4; i++) {
@@ -289,10 +298,11 @@ void drawCentergonArms(void)
         /*tmp += factor*(i*i)/3;*/
         tmp /= 40;
         tmp += i;
-        if (game.over && game.dead) {
-            tmp /= 1+(MAX_DEAD_TIMER - game.dead_timer);
+        if (game.over && game.all_dead) {
+            tmp /= 1+(MAX_DEAD_TIMER - game.all_dead_timer);
         }
-        if (!(game.over && game.dead && game.dead_timer == 0)) {
+		// TODO: make this clearer
+        if (!(game.over && game.all_dead && game.all_dead_timer == 0)) {
             tmp += game.inner_radius;
             drawCentergon(tmp, game.shape, false);
         }
@@ -307,11 +317,11 @@ void calculateRotation(int *x, int *y)
     float matrix_b = -sin(game.field_rot);
     float matrix_c = sin(game.field_rot);
     float matrix_d = cos(game.field_rot);
-    
+
     float rotated_x = (matrix_a  * (*x) + matrix_b * (*y));
     float rotated_y = (matrix_c *  (*x) + matrix_d * (*y));
-    
-    
+
+
     *x = (int)rotated_x;
     *y = (int)rotated_y;
 }
