@@ -60,7 +60,7 @@ extern struct game_state_t {
                             // changes
 
     float field_rot;        // rotation of the field;
-    int8_t field_rot_dir;   // rotation (lef/right) of the field. -1 or 1
+	float field_rot_incr;;	// incrementation of field_rot each tick
 
     uint8_t num_bars;       // number of bars on the playfield
     uint8_t shape;          // order of the current level's ngon: 3=tri, 4=quad, ...

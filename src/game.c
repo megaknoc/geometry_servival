@@ -1,6 +1,6 @@
 #include "game.h"
 
-bool gameSelectSpeedDiv(void);
+bool gameConfigureLevel(void);
 
 struct game_state_t game;
 
@@ -105,7 +105,7 @@ static void gameCrushBar(bar_t *b)
         // TODO:
         // add one pixel in shape
 
-        gameSelectSpeedDiv();
+        gameConfigureLevel();
     }
     b->timer = 11;
     b->exploding = true;
@@ -147,41 +147,44 @@ void changeLevel(void)
 
     game.bars_crushed = 0;
     // TODO recompute value based on shape
-    game.bars_needed = 100;
+    game.bars_needed = 60;
 
 }
 
 /**
- * @brief Select the speed of the bars depending on the player's points.
+ * @brief Select the speed of the bars depending on the current player/game state.
  * @returns true if the divider changed.
  */
-bool gameSelectSpeedDiv(void)
+bool gameConfigureLevel(void)
 {
-    game.speed_div = 1;
-#if 0
-    uint8_t last_div = game.speed_div;
-    if (game.points < 10) {
-        game.speed_div = MAX_BAR_SPEED_DIVIDER;
-    } else if (game.points < 40) {
-        game.speed_div = 4;
-    } else if (game.points < 110) {
-        game.speed_div = 3;
-    } else if (game.points < 230) {
-        game.speed_div = 2;
-    } else if (game.points < 350) {
-        game.speed_div = 1;
-    } else {
-        game.speed_div = 0;
-    }
-#endif
-
-    // next level each 100 points
-    if (game.bars_crushed == 50) {
+	uint8_t next_div;
+	switch(game.bars_crushed) {
+	case 0:
+		next_div = 3;
+		break;
+	case 10:
+		next_div = 2;
+		break;
+	case 30:
+		next_div = 1;
+		break;
+	case 100:
 		changeLevel();
-    }
+		next_div = 3;
+		break;
+	default:
+		next_div = game.speed_div;
+	}
 
-    /*return last_div != game.speed_div;*/
-    return false;
+	// select field rotation based on next_div too
+	game.field_rot_incr = (1+3-next_div)/100.0f;
+
+	if (next_div != game.speed_div) {
+		game.speed_div = next_div;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void initPlayers(void)
@@ -232,7 +235,7 @@ void gameInit(void)
     game.num_bars = 0;
 
 	game.field_rot = 0.0f;
-	game.field_rot_dir = 1;
+	game.field_rot_incr = 0.03f;
 
 	initPlayers();
 
@@ -249,7 +252,7 @@ void gameInit(void)
     input.button_a = false;
     input.button_b = false;
 
-    gameSelectSpeedDiv();
+    gameConfigureLevel();
 	changeLevel();
 
     framebufferClear(Pixel_dark);
@@ -444,6 +447,7 @@ bool isSectorOk(uint8_t s)
  */
 bool gameTick(void)
 {
+	printf("crushed: %d\n", game.bars_crushed);
 	int i;
 	for (i=0; i<MAX_PLAYERS; i++) {
 		player_t *p = &game.players[i];
@@ -510,11 +514,11 @@ bool gameTick(void)
     }
 
     // rotate the playfield
-	game.field_rot += game.field_rot_dir * 0.03f;    //Todo: Fix overflow
+	game.field_rot += game.field_rot_incr;		//Todo: Fix overflow
 
 	// 1/200th chance of changing the rotation direction
 	if (rand() % 200 < 1) {
-		game.field_rot_dir *= -1;
+		game.field_rot_incr *= -1;
 	}
 
     // move the plafield nearer to the player
