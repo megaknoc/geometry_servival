@@ -255,12 +255,12 @@ void drawCentergonArms(void)
 
     // The effective factor is low pass filtered and mixed with a sine to look
     // more dynamic
-    static int factor = 10;
+    static float factor = 10;
     // TODO:
     // make period shorter, if the less points are needed for level-up
     factor = ((5.0f*factor)/6.0f + (stretch/6.0f));
 
-    const int eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);
+    const float eff_factor = ((float)factor) * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);
 
     /*factor = stretch * (1.0f+sin(2.0f*M_PI*game.ticks/15)/2.0f);*/
 
