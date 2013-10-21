@@ -134,22 +134,21 @@ bool gameChangePolygon(uint8_t val)
         return false;
     }
 
-    gameDeleteAllBars();
-
-    game.bars_crushed = 0;
-    // TODO
-    // XXX recompute value based on shape
-    game.bars_needed = 100;
-
     game.shape = val;
     return true;
 }
 
 void changeLevel(void)
 {
-	game.bars_crushed = 0;
 	/*gameChangePolygon(game.shape+1);*/
 	gameChangePolygon((rand() % 5) + MIN_SHAPE);
+
+    gameDeleteAllBars();
+
+    game.bars_crushed = 0;
+    // TODO recompute value based on shape
+    game.bars_needed = 100;
+
 }
 
 /**
@@ -251,6 +250,7 @@ void gameInit(void)
     input.button_b = false;
 
     gameSelectSpeedDiv();
+	changeLevel();
 
     framebufferClear(Pixel_dark);
 }
