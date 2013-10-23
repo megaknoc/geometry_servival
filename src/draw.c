@@ -89,7 +89,7 @@ uint32_t patternFromDist(uint8_t s)
 void drawBar(bar_t *bar, bool use_stipple)
 {
     assert(bar != NULL && bar->valid);
-    // assert(bar->sector < game.shape);
+    assert(bar->sector < game.shape);
     assert(!bar->exploding);
 
     int8_t cs[2*(game.shape+1)];
@@ -347,6 +347,11 @@ void drawCentergonArms(void)
     }
 }
 
+/**
+ * @brief Calculate the rotation of the playing field
+ * @detail New coordinates get calculated by a 2-dim rotation matrix
+ * @detail See also: http://en.wikipedia.org/wiki/Rotation_matrix
+ */
 void calculateRotation(int *x, int *y)
 {
     float matrix_a = cos(game.field_rot);

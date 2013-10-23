@@ -33,6 +33,9 @@ uint32_t bitrot_r(uint32_t data, uint8_t n)
     return tmp;
 }
 
+/**
+ * @brief Initialize the random number generator SFMT
+ */
 void initRandomGenerator()
 {
     time_t t;
@@ -40,6 +43,9 @@ void initRandomGenerator()
     sfmt_init_gen_rand(&randomGenerator, (uint32_t)t);
 }
 
+/**
+ * @brief Generate a uint32 random number
+ */
 uint32_t generateRandomUInt32()
 {
     return sfmt_genrand_uint32(&randomGenerator);
