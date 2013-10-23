@@ -17,16 +17,16 @@ OPTIMIZATION = 0
 # http://stackoverflow.com/questions/714100/os-detecting-makefile
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	INCLUDES += -lGL
+	INCLUDES += -lGL -I.
 endif
 ifeq ($(UNAME_S),Darwin)
 	INCLUDES += -framework OpenGL
 endif
-
-CFLAGS = -std=c99 -g -O$(OPTIMIZATION) $(WARN)
+SFMT = -DSFMT_MEXP=19937
+CFLAGS = -std=c99 -g -O$(OPTIMIZATION) $(WARN) $(SFMT)
 LDFLAGS = $(INCLUDES)
 
-CXXFLAGS = -std=c++11 -g -O$(OPTIMIZATION) $(WARN)
+CXXFLAGS = -std=c++11 -g -O$(OPTIMIZATION) $(WARN) $(SFMT)
 
 SRCS = src/hexagon.cpp \
 	   src/simulator.cpp \
@@ -36,6 +36,8 @@ SRCS = src/hexagon.cpp \
 	   src/draw.c \
 	   src/util.c
 
+SRCS += SFMT/SFMT.c
+
 OBJS = build/hexagon.o \
 	   build/simulator.o \
 	   build/framebuffer.o \
@@ -43,6 +45,8 @@ OBJS = build/hexagon.o \
 	   build/game.o \
 	   build/draw.o \
 	   build/util.o
+
+OBJS += SFMT/SFMT.o
 
 PROJECT = hexagon
 

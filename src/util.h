@@ -2,9 +2,10 @@
 #define __INCLUDED_UTIL_H__
 
 #include <stdint.h>
-#include "SFMT.h"
 #include <stdlib.h>
 #include <time.h>
+
+#include "../SFMT/SFMT.h"
 
 #ifdef __cplusplus
 extern "C" {
