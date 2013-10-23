@@ -144,7 +144,7 @@
 				4B7E0373181435D70043B48D /* sndfile.framework */,
 			);
 			name = Frameworks;
-			path = ../../../../../Library/Frameworks;
+			path = /Library/Frameworks;
 			sourceTree = "<group>";
 		};
 		4BF515CD181433C000719AE2 = {
