@@ -9,6 +9,8 @@ extern "C" {
 
 #define _BV(i) (1<<(i))
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
 
 // taken from /usr/include/math.h

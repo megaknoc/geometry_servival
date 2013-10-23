@@ -5,4 +5,5 @@ add option to fill the level with debris created by bars
 add proper dependency handling to makefile
 include or generate sine table
 timer use is insane! fix it
+move options from constants.h into command-line options / menu
 

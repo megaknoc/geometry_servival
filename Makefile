@@ -9,9 +9,19 @@ WARN = -Wall \
        -Wno-unused-function
 
 INCLUDES = -I/usr/lib -lsfml-graphics -lsfml-window -lsfml-system \
-		   -lGL -lm
+		   -lm
+
 
 OPTIMIZATION = 0
+
+# http://stackoverflow.com/questions/714100/os-detecting-makefile
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	INCLUDES += -lGL
+endif
+ifeq ($(UNAME_S),Darwin)
+	INCLUDES += -framework OpenGL
+endif
 
 CFLAGS = -std=c99 -g -O$(OPTIMIZATION) $(WARN)
 LDFLAGS = $(INCLUDES)

@@ -147,7 +147,16 @@ void changeLevel(void)
 
     game.bars_crushed = 0;
     // TODO recompute value based on shape
-    game.bars_needed = 60;
+    /*game.bars_needed = 60;*/
+
+    // make dead players alive
+    int i;
+    for (i=0; i<MAX_PLAYERS; i++) {
+        player_t *p = &game.players[i];
+        if (p->valid) {
+            p->dead = false;
+        }
+    }
 
 }
 
@@ -158,6 +167,8 @@ void changeLevel(void)
 bool gameConfigureLevel(void)
 {
     uint8_t next_div;
+
+#if 0
     switch(game.bars_crushed) {
     case 0:
         next_div = 3;
@@ -174,6 +185,18 @@ bool gameConfigureLevel(void)
         break;
     default:
         next_div = game.speed_div;
+    }
+#else
+    // it's much cooler if the speed of bars stays the same
+    next_div = 1;
+#endif
+
+    game.inner_radius = MIN_INNER_RADIUS + game.bars_crushed / 20;
+
+    // change the game, if the inner radius becomes to big
+    if (game.inner_radius >= MAX_INNER_RADIUS) {
+        // TODO: show animation + give 10% of current points to each living player
+        changeLevel();
     }
 
     // select field rotation based on next_div too
@@ -247,11 +270,11 @@ void gameInit(void)
     addPlayer();
 
     game.bars_crushed = 0;
-    game.bars_needed = 100;
+    /*game.bars_needed = 100;*/
 
     game.over = false;
 
-    game.inner_radius = 8;
+    game.inner_radius = MIN_INNER_RADIUS;
     game.shape = MIN_SHAPE;
 
     input.button_a = false;
@@ -284,6 +307,8 @@ static bool playerCollidesWithBars(player_t *p)
     CHECK_PIXEL( 0, -1);
     CHECK_PIXEL( 1,  0);
     CHECK_PIXEL( 0,  1);
+
+#undef CHECK_PIXEL
 
     return false;
 }
@@ -320,23 +345,6 @@ void playerSetDead(player_t *p)
  */
 void gameRender(void)
 {
-    // change order
-#if 0
-    const int max = 100;
-    static int div = 0;
-    static bool dir_up = true;
-    div++;
-    if (div && (div % max) == 0) {
-        game.shape += dir_up ? 1 : -1;
-        if (game.shape == 3 || game.shape> 7) {
-            gameDeleteAllBars();
-            game.shape = 3;
-            //dir_up = !dir_up;
-        }
-
-    }
-#endif
-
     framebufferClear(Pixel_dark);
 
     drawBars(true);
@@ -454,13 +462,21 @@ bool isSectorOk(uint8_t s)
     return true;
 }
 
+void rotatePlayfield(void)
+{
+    // rotate the playfield
+    game.field_rot += game.field_rot_incr;		//Todo: Fix overflow
+
+    if (game.field_rot > 2.0f * M_PI) {
+        game.field_rot -= 2.0f * M_PI;
+    }
+}
 /**
  * @brief Advance the game state.
  * @returns true if game should be reset.
  */
 bool gameTick(void)
 {
-    printf("crushed: %d\n", game.bars_crushed);
     int i;
     for (i=0; i<MAX_PLAYERS; i++) {
         player_t *p = &game.players[i];
@@ -533,8 +549,7 @@ bool gameTick(void)
             }
         }
 
-        // rotate the playfield
-        game.field_rot += game.field_rot_incr;		//Todo: Fix overflow
+        rotatePlayfield();
 
         // 1/250th chance of changing the rotation direction
         if (rand() % 250 < 1) {

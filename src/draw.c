@@ -14,7 +14,6 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
     int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
     int err = dx+dy, e2; /* error value e_xy */
 
-
     while(1) {
         framebufferSet(x0, y0, val);
         if (x0==x1 && y0==y1) break;
@@ -137,6 +136,16 @@ void drawExplodingBar(bar_t *bar)
     // break the bar into smaller bars and throw them away in the direction
     // they are coming from
 
+    // tuple of direction vectors for each sector
+    // TODO
+    const float vectors[2*game.shape];
+
+    // get the opposite direction of the bar direction
+    // TODO
+
+    // and move rotating debris from the bars in this direction
+    // TODO
+
     // XXX random pixels as the explosion for now
     // The direction can be computed from the sector and the current game
     // shape.
@@ -145,6 +154,10 @@ void drawExplodingBar(bar_t *bar)
     y0 = GAME_CENTER_Y + cs[2*i+1];
     x1 = GAME_CENTER_X + cs[2*i+2];
     y1 = GAME_CENTER_Y + cs[2*i+3];
+    /*x0 = GAME_CENTER_X + cs[2*i+0];*/
+    /*y0 = GAME_CENTER_Y + cs[2*i+1];*/
+    /*x1 = GAME_CENTER_X + cs[2*i+2];*/
+    /*y1 = GAME_CENTER_Y + cs[2*i+3];*/
 
     if ((bar->timer % 5) < 3) {
         framebufferSet(x0+2, y0-1, Pixel_bright);
@@ -200,11 +213,14 @@ void drawPlayer(player_t *p)
             // dont draw, if dead for too long time.
             return;
         }
-        // else, draw as signle pixel
-        framebufferSet(x,   y,   val);
-
         const uint8_t move = MAX_DEAD_TIMER - p->dead_timer;
         const uint8_t move_h = (2*move) / 3;
+
+        /*const uint8_t fall = pow(MAX_DEAD_TIMER - p->dead_timer, 2)/4;*/
+        /*y += fall;*/
+
+        // else, draw as signle pixel
+        framebufferSet(x,   y,   val);
 
         framebufferSet(x-move,   y,        val);
         framebufferSet(x,        y-move,   val);

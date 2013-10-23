@@ -54,7 +54,7 @@ typedef struct bar_t {
 extern struct game_state_t {
     uint32_t ticks;         // Game tick
     uint32_t bars_crushed;  // Bars crushed this level. Reset on shape change.
-    uint32_t bars_needed ;  // How many crushed bars are needed to advance shape
+    //uint32_t bars_needed ;  // How many crushed bars are needed to advance shape
                             // Must be recomputed to the amount of pixels that
                             // fills the current centergon each time shape
                             // changes
