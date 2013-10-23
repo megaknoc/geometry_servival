@@ -141,7 +141,7 @@ bool gameChangePolygon(uint8_t val)
 void changeLevel(void)
 {
     /*gameChangePolygon(game.shape+1);*/
-    gameChangePolygon((rand() % 5) + MIN_SHAPE);
+    gameChangePolygon((generateRandomUInt32() % 5) + MIN_SHAPE);
 
     gameDeleteAllBars();
 
@@ -244,9 +244,7 @@ bool addPlayer(void)
  */
 void gameInit(void)
 {
-    time_t t;
-    time(&t);
-    srand((unsigned int)t);
+    initRandomGenerator();
 
     bar_t unused_bar = {.sector=0, .dist=0, .width=0, .valid=false};
     int i;
@@ -538,10 +536,10 @@ bool gameTick(void)
     // add new bars until there are enough on the playfield
     if (!game.over) {
         if (game.num_bars < MAX_BARS) {
-            if (rand() % 180 < 13 + 8*(game.shape-MIN_SHAPE)) {
-                /*if (rand() % 180 < (10 + 2*(MAX_BAR_SPEED_DIVIDER-game.speed_div))) {*/
+            if (generateRandomUInt32() % 180 < 13 + 8*(game.shape-MIN_SHAPE)) {
+                /*if (randomUInt32() % 180 < (10 + 2*(MAX_BAR_SPEED_DIVIDER-game.speed_div))) {*/
                 // TODO: randomize + patterns
-                uint8_t s = rand() % game.shape;
+                uint8_t s = generateRandomUInt32() % game.shape;
                 if (isSectorOk(s)) {
                     gameAddBar(s, 0);
                 }
@@ -550,9 +548,10 @@ bool gameTick(void)
         }
 
         rotatePlayfield();
+        
 
         // 1/250th chance of changing the rotation direction
-        if (rand() % 250 < 1) {
+        if (generateRandomUInt32() % 250 < 1) {
             game.field_rot_incr *= -1;
         }
 

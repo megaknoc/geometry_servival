@@ -2,6 +2,9 @@
 #define __INCLUDED_UTIL_H__
 
 #include <stdint.h>
+#include "SFMT.h"
+#include <stdlib.h>
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,9 +21,11 @@ extern "C" {
 #define M_PI 3.14159265358979323846
 #endif
 
-
 uint32_t bitrot_l(uint32_t data, uint8_t n);
 uint32_t bitrot_r(uint32_t data, uint8_t n);
+uint32_t generateRandomUInt32();
+void initRandomGenerator();
+
 
 #ifdef __cplusplus
 }

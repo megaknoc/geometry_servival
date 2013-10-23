@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B4859C818184A5C006F0F31 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B4859C618184A5C006F0F31 /* util.c */; };
+		4B5606B218184EFC00010D11 /* SFMT.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B5606B018184EFC00010D11 /* SFMT.c */; };
 		4B7E03591814355A0043B48D /* draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E034D1814355A0043B48D /* draw.c */; };
 		4B7E035A1814355A0043B48D /* framebuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E034F1814355A0043B48D /* framebuffer.c */; };
 		4B7E035B1814355A0043B48D /* game.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03521814355A0043B48D /* game.c */; };
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		4B4859C618184A5C006F0F31 /* util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = util.c; path = ../src/util.c; sourceTree = "<group>"; };
 		4B4859C718184A5C006F0F31 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = ../src/util.h; sourceTree = "<group>"; };
+		4B5606B018184EFC00010D11 /* SFMT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SFMT.c; path = SFMT/SFMT.c; sourceTree = SOURCE_ROOT; };
+		4B5606B118184EFC00010D11 /* SFMT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFMT.h; path = SFMT/SFMT.h; sourceTree = SOURCE_ROOT; };
 		4B7E034C1814355A0043B48D /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = constants.h; path = ../src/constants.h; sourceTree = "<group>"; };
 		4B7E034D1814355A0043B48D /* draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw.c; path = ../src/draw.c; sourceTree = "<group>"; };
 		4B7E034E1814355A0043B48D /* draw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = draw.h; path = ../src/draw.h; sourceTree = "<group>"; };
@@ -87,6 +90,8 @@
 		4B4859C918184ACE006F0F31 /* SFMT */ = {
 			isa = PBXGroup;
 			children = (
+				4B5606B018184EFC00010D11 /* SFMT.c */,
+				4B5606B118184EFC00010D11 /* SFMT.h */,
 			);
 			name = SFMT;
 			sourceTree = "<group>";
@@ -264,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B7E035C1814355A0043B48D /* hexagon.cpp in Sources */,
+				4B5606B218184EFC00010D11 /* SFMT.c in Sources */,
 				4B7E035D1814355A0043B48D /* input.c in Sources */,
 				4B7E035B1814355A0043B48D /* game.c in Sources */,
 				4B7E03591814355A0043B48D /* draw.c in Sources */,

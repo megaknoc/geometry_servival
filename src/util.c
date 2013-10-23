@@ -1,5 +1,7 @@
 #include "util.h"
 
+sfmt_t randomGenerator;
+
 // Note:
 // bit rotatet functions could be inlined or replaced by equivalent assembler instructions.
 
@@ -29,4 +31,16 @@ uint32_t bitrot_r(uint32_t data, uint8_t n)
     tmp = data >> n;
     tmp |= (data << (32-n));
     return tmp;
+}
+
+void initRandomGenerator()
+{
+    time_t t;
+    time(&t);
+    sfmt_init_gen_rand(&randomGenerator, (uint32_t)t);
+}
+
+uint32_t generateRandomUInt32()
+{
+    return sfmt_genrand_uint32(&randomGenerator);
 }
