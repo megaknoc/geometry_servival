@@ -1,5 +1,6 @@
 dumps/*
 build/*
+SFMT/*.o
 hexagon
 .lvimrc
 
