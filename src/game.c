@@ -453,7 +453,7 @@ bool isSectorOk(uint8_t s)
         }
     }
 
-    if (init_dist - max_distance < 7) {   // 7 should be an appropriate value
+    if (init_dist - max_distance < MIN_DISTANCE_BETWEEN_BARS) {
         return false;
     }
 

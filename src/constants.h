@@ -34,6 +34,8 @@
 #define MAX_ALL_DEAD_TIMER          (GAME_OVER_ANIM_DELAY + 20)
 #define POINT_MULTIPLIER            1
 
+#define MIN_DISTANCE_BETWEEN_BARS   7   //7 should be an appropriate value
+
 // 1      : instant updates of pixels on the screen
 // 1..0.5 : slower update; pixel needs a few refreshs to get the desired brigthness
 // 0.3..0 : very slow update; moving pixels create long traces, need more frames
