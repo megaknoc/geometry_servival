@@ -19,10 +19,6 @@ extern "C" {
 #endif
 
 
-#ifdef __cplusplus
-}
-#endif
-
 void drawLine(int x0, int y0, int x1, int y1, int val);
 void drawBar(bar_t *bar, bool use_stipple);
 void drawBars(bool use_stipple);
@@ -36,6 +32,11 @@ void calculateRotation(int *x, int *y);
 
 extern const uint8_t Pixel_dark;
 extern const uint8_t Pixel_bright;
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif
 
