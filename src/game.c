@@ -548,7 +548,7 @@ bool gameTick(void)
         }
 
         rotatePlayfield();
-        
+
 
         // 1/250th chance of changing the rotation direction
         if (generateRandomUInt32() % 250 < 1) {
