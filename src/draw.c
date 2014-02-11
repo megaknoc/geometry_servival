@@ -26,12 +26,14 @@ void drawLine(int x0, int y0, int x1, int y1, int val)
 /**
  * @brief Draw a bezier curve from one point to the other with two vectors
  * influencing the curve..
- * @based on:
+ * @detail Look at source code + external site for parameter description.
+ * @detail based on:
  * http://freespace.virgin.net/hugo.elias/graphics/x_bezier.htm
  */
 void drawBezier(
     int x0, int y0, int vx0, int vy0,
-    int x1, int y1, int vx1, int vy1)
+    int x1, int y1, int vx1, int vy1,
+    int val)
 {
 #if 1
     // TODO
@@ -48,6 +50,9 @@ void drawBezier(
     int py1 = y1 + vy1;
 
     float t;
+    // TODO: stepsize okay for most curves?
+    // TODO: simple stipple fattern is possible if playing around with the
+    // variable 't' in here.
     for (t=0.0f; t < 1.0f; t += 0.01f) {
         float a[3] = {t,      powf(t, 2.0f),   powf(t, 3.0f)};
         float b[3] = {1.0f-t, powf(1.0f-t, 2), powf(1.0f-t, 3.0f)};
@@ -55,16 +60,11 @@ void drawBezier(
         float tmp_x = x0*b[2] + 3*px0*b[1]*a[0] + 3*px1*b[0]*a[1] + x1*a[2];
         float tmp_y = y0*b[2] + 3*py0*b[1]*a[0] + 3*py1*b[0]*a[1] + y1*a[2];
 
-        // round coords
-        tmp_x += 0.5f;
-        tmp_y += 0.5f;
-
-        // draw a point at the integer position
+        // round coordinates and draw a point at the integer position
         framebufferSet(
-            (uint8_t) tmp_x,
-            (uint8_t) tmp_y,
-            Pixel_bright
-        );
+            (uint8_t) (0.5f+tmp_x),
+            (uint8_t) (0.5f+tmp_y),
+            val);
     }
 
 #endif
