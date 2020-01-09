@@ -7,5 +7,3 @@ include or generate sine table
 timer use is insane! fix it
 move options from constants.h into command-line options / menu
 
-add filled polygons to draw bigger bars
-

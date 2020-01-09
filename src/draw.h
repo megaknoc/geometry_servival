@@ -28,13 +28,6 @@ void drawFill(void);
 void drawPlayer(player_t *p);
 void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines);
 void drawCentergonArms(void);
-
-void drawBezier(
-    int x0, int y0,
-    int vx0, int vy0,
-    int x1, int y1,
-    int vx1, int vy1);
-
 void calculateRotation(int *x, int *y);
 
 extern const uint8_t Pixel_dark;

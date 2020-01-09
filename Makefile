@@ -33,7 +33,6 @@ SRCS = src/hexagon.cpp \
 	   src/framebuffer.c \
 	   src/input.c \
 	   src/game.c \
-	   src/demo.c \
 	   src/draw.c \
 	   src/util.c
 
@@ -44,7 +43,6 @@ OBJS = build/hexagon.o \
 	   build/framebuffer.o \
 	   build/input.o \
 	   build/game.o \
-	   build/demo.o \
 	   build/draw.o \
 	   build/util.o
 
