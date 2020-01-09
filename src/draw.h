@@ -33,8 +33,7 @@ void drawBezier(
     int x0, int y0,
     int vx0, int vy0,
     int x1, int y1,
-    int vx1, int vy1,
-    int val);
+    int vx1, int vy1);
 
 void calculateRotation(int *x, int *y);
 

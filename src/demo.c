@@ -86,21 +86,22 @@ void demoRender(void)
     /*renderRectangles();*/
 
     drawBezier(
-        50, 5, 30, -10,
-        80, 60, -50, 0,
-        Pixel_bright);
+        10, 10,
+        0,  10,
+        30, 40,
+       -10, 10
+        );
 
     int x = 50;
     int y = 50;
 
     int i;
-    for (i=0; i<1; i++) {
+    for (i=0; i<3; i++) {
         drawBezier(
             0, 0,
             rand() % x, rand() % y,
             40, 40,
-            -rand() % x, -rand() % y,
-            Pixel_bright);
+            -rand() % x, -rand() % y);
     }
 
 
