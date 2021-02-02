@@ -12,7 +12,7 @@
 		4B7E03591814355A0043B48D /* draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E034D1814355A0043B48D /* draw.c */; };
 		4B7E035A1814355A0043B48D /* framebuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E034F1814355A0043B48D /* framebuffer.c */; };
 		4B7E035B1814355A0043B48D /* game.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03521814355A0043B48D /* game.c */; };
-		4B7E035C1814355A0043B48D /* hexagon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03541814355A0043B48D /* hexagon.cpp */; };
+		4B7E035C1814355A0043B48D /* geometry_survival.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03541814355A0043B48D /* geometry_survival.cpp */; };
 		4B7E035D1814355A0043B48D /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03551814355A0043B48D /* input.c */; };
 		4B7E035E1814355A0043B48D /* simulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B7E03571814355A0043B48D /* simulator.cpp */; };
 		4B7E03781814360E0043B48D /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B7E0372181435D70043B48D /* SFML.framework */; };
@@ -38,7 +38,7 @@
 		4B7E03511814355A0043B48D /* game_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game_types.h; path = ../src/game_types.h; sourceTree = "<group>"; };
 		4B7E03521814355A0043B48D /* game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = game.c; path = ../src/game.c; sourceTree = "<group>"; };
 		4B7E03531814355A0043B48D /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = game.h; path = ../src/game.h; sourceTree = "<group>"; };
-		4B7E03541814355A0043B48D /* hexagon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hexagon.cpp; path = ../src/hexagon.cpp; sourceTree = "<group>"; };
+		4B7E03541814355A0043B48D /* geometry_survival.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = geometry_survival.cpp; path = ../src/geometry_survival.cpp; sourceTree = "<group>"; };
 		4B7E03551814355A0043B48D /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input.c; path = ../src/input.c; sourceTree = "<group>"; };
 		4B7E03561814355A0043B48D /* input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../src/input.h; sourceTree = "<group>"; };
 		4B7E03571814355A0043B48D /* simulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = simulator.cpp; path = ../src/simulator.cpp; sourceTree = "<group>"; };
@@ -64,8 +64,8 @@
 		4B7E0372181435D70043B48D /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SFML.framework; sourceTree = "<group>"; };
 		4B7E0373181435D70043B48D /* sndfile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = sndfile.framework; sourceTree = "<group>"; };
 		4B7E037A181436920043B48D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		4BF515D7181433C000719AE2 /* mini_hexagon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mini_hexagon.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4BF515DB181433C000719AE2 /* mini_hexagon-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "mini_hexagon-Info.plist"; sourceTree = "<group>"; };
+		4BF515D7181433C000719AE2 /* geometry_survival.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = geometry_survival.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BF515DB181433C000719AE2 /* geometry_survival-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "geometry_survival-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +109,7 @@
 				4B7E03511814355A0043B48D /* game_types.h */,
 				4B7E03521814355A0043B48D /* game.c */,
 				4B7E03531814355A0043B48D /* game.h */,
-				4B7E03541814355A0043B48D /* hexagon.cpp */,
+				4B7E03541814355A0043B48D /* geometry_survival.cpp */,
 				4B7E03551814355A0043B48D /* input.c */,
 				4B7E03561814355A0043B48D /* input.h */,
 				4B7E03571814355A0043B48D /* simulator.cpp */,
@@ -151,7 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				4B7E035F181435D70043B48D /* Frameworks */,
-				4BF515D9181433C000719AE2 /* mini_hexagon */,
+				4BF515D9181433C000719AE2 /* geometry_survival */,
 				4BF515D8181433C000719AE2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -159,12 +159,12 @@
 		4BF515D8181433C000719AE2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4BF515D7181433C000719AE2 /* mini_hexagon.app */,
+				4BF515D7181433C000719AE2 /* geometry_survival.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4BF515D9181433C000719AE2 /* mini_hexagon */ = {
+		4BF515D9181433C000719AE2 /* geometry_survival */ = {
 			isa = PBXGroup;
 			children = (
 				4B4859CA18184AE0006F0F31 /* base */,
@@ -172,13 +172,13 @@
 				4BF515E1181433C000719AE2 /* Resources */,
 				4BF515DA181433C000719AE2 /* Supporting Files */,
 			);
-			path = mini_hexagon;
+			path = geometry_survival;
 			sourceTree = "<group>";
 		};
 		4BF515DA181433C000719AE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4BF515DB181433C000719AE2 /* mini_hexagon-Info.plist */,
+				4BF515DB181433C000719AE2 /* geometry_survival-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -193,9 +193,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4BF515D6181433C000719AE2 /* mini_hexagon */ = {
+		4BF515D6181433C000719AE2 /* geometry_survival */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4BF515EC181433C000719AE2 /* Build configuration list for PBXNativeTarget "mini_hexagon" */;
+			buildConfigurationList = 4BF515EC181433C000719AE2 /* Build configuration list for PBXNativeTarget "geometry_survival" */;
 			buildPhases = (
 				4BF515D2181433C000719AE2 /* Sources */,
 				4BF515D3181433C000719AE2 /* Frameworks */,
@@ -206,9 +206,9 @@
 			);
 			dependencies = (
 			);
-			name = mini_hexagon;
-			productName = mini_hexagon;
-			productReference = 4BF515D7181433C000719AE2 /* mini_hexagon.app */;
+			name = geometry_survival;
+			productName = geometry_survival;
+			productReference = 4BF515D7181433C000719AE2 /* geometry_survival.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -220,7 +220,7 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Andreas Ortmann";
 			};
-			buildConfigurationList = 4BF515D1181433C000719AE2 /* Build configuration list for PBXProject "mini_hexagon" */;
+			buildConfigurationList = 4BF515D1181433C000719AE2 /* Build configuration list for PBXProject "geometry_survival" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -232,7 +232,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4BF515D6181433C000719AE2 /* mini_hexagon */,
+				4BF515D6181433C000719AE2 /* geometry_survival */,
 			);
 		};
 /* End PBXProject section */
@@ -268,7 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B7E035C1814355A0043B48D /* hexagon.cpp in Sources */,
+				4B7E035C1814355A0043B48D /* geometry_survival.cpp in Sources */,
 				4B5606B218184EFC00010D11 /* SFMT.c in Sources */,
 				4B7E035D1814355A0043B48D /* input.c in Sources */,
 				4B7E035B1814355A0043B48D /* game.c in Sources */,
@@ -394,7 +394,7 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
-				INFOPLIST_FILE = "mini_hexagon/mini_hexagon-Info.plist";
+				INFOPLIST_FILE = "geometry_survival/geometry_survival-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
 				VALID_ARCHS = x86_64;
@@ -409,7 +409,7 @@
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
-				INFOPLIST_FILE = "mini_hexagon/mini_hexagon-Info.plist";
+				INFOPLIST_FILE = "geometry_survival/geometry_survival-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
 				VALID_ARCHS = x86_64;
@@ -419,7 +419,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4BF515D1181433C000719AE2 /* Build configuration list for PBXProject "mini_hexagon" */ = {
+		4BF515D1181433C000719AE2 /* Build configuration list for PBXProject "geometry_survival" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4BF515EA181433C000719AE2 /* Debug */,
@@ -428,7 +428,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4BF515EC181433C000719AE2 /* Build configuration list for PBXNativeTarget "mini_hexagon" */ = {
+		4BF515EC181433C000719AE2 /* Build configuration list for PBXNativeTarget "geometry_survival" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4BF515ED181433C000719AE2 /* Debug */,

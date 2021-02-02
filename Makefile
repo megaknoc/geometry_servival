@@ -28,7 +28,7 @@ LDFLAGS = $(INCLUDES)
 
 CXXFLAGS = -std=c++11 -g -O$(OPTIMIZATION) $(WARN) $(SFMT)
 
-SRCS = src/hexagon.cpp \
+SRCS = src/geometry_survival.cpp \
 	   src/simulator.cpp \
 	   src/framebuffer.c \
 	   src/input.c \
@@ -38,7 +38,7 @@ SRCS = src/hexagon.cpp \
 
 SRCS += SFMT/SFMT.c
 
-OBJS = build/hexagon.o \
+OBJS = build/geometry_survival.o \
 	   build/simulator.o \
 	   build/framebuffer.o \
 	   build/input.o \
@@ -48,7 +48,7 @@ OBJS = build/hexagon.o \
 
 OBJS += SFMT/SFMT.o
 
-PROJECT = hexagon
+PROJECT = geometry_survival
 
 default: $(PROJECT)
 

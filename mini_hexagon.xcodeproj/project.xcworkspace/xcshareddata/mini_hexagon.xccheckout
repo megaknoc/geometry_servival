@@ -7,21 +7,21 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>C335968D-5FF3-4E17-818C-EEFA10EBCA61</string>
 	<key>IDESourceControlProjectName</key>
-	<string>mini_hexagon</string>
+	<string>geometry_survival</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>C499AFD1-89A4-4040-A7DD-DA603CD5D209</key>
-		<string>https://github.com/megaknoc/mini_hexagon.git</string>
+		<string>https://github.com/megaknoc/geometry_survival.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>mini_hexagon.xcodeproj/project.xcworkspace</string>
+	<string>geometry_survival.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>C499AFD1-89A4-4040-A7DD-DA603CD5D209</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/megaknoc/mini_hexagon.git</string>
+	<string>https://github.com/megaknoc/geometry_survival.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
@@ -34,7 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>C499AFD1-89A4-4040-A7DD-DA603CD5D209</string>
 			<key>IDESourceControlWCCName</key>
-			<string>mini_hexagon</string>
+			<string>geometry_survival</string>
 		</dict>
 	</array>
 </dict>

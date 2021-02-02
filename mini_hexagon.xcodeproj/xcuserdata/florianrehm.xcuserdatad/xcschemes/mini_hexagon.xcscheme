@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4BF515D6181433C000719AE2"
-               BuildableName = "mini_hexagon.app"
-               BlueprintName = "mini_hexagon"
-               ReferencedContainer = "container:mini_hexagon.xcodeproj">
+               BuildableName = "geometry_survival.app"
+               BlueprintName = "geometry_survival"
+               ReferencedContainer = "container:geometry_survival.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4BF515D6181433C000719AE2"
-            BuildableName = "mini_hexagon.app"
-            BlueprintName = "mini_hexagon"
-            ReferencedContainer = "container:mini_hexagon.xcodeproj">
+            BuildableName = "geometry_survival.app"
+            BlueprintName = "geometry_survival"
+            ReferencedContainer = "container:geometry_survival.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4BF515D6181433C000719AE2"
-            BuildableName = "mini_hexagon.app"
-            BlueprintName = "mini_hexagon"
-            ReferencedContainer = "container:mini_hexagon.xcodeproj">
+            BuildableName = "geometry_survival.app"
+            BlueprintName = "geometry_survival"
+            ReferencedContainer = "container:geometry_survival.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4BF515D6181433C000719AE2"
-            BuildableName = "mini_hexagon.app"
-            BlueprintName = "mini_hexagon"
-            ReferencedContainer = "container:mini_hexagon.xcodeproj">
+            BuildableName = "geometry_survival.app"
+            BlueprintName = "geometry_survival"
+            ReferencedContainer = "container:geometry_survival.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

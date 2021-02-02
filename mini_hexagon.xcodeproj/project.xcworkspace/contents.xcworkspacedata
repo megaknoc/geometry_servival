@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:mini_hexagon.xcodeproj">
+      location = "self:geometry_survival.xcodeproj">
    </FileRef>
 </Workspace>

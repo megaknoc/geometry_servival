@@ -244,7 +244,7 @@ void drawPlayer(player_t *p)
 /**
  * @brief Draw the $gon at the center.
  * @detail The *gon changes with the current level $gon.
- * @param[in] with_lines If true, draw lines between the corners of the hexagon.
+ * @param[in] with_lines If true, draw lines between the corners of the geometry_survival.
  */
 void drawCentergon(uint8_t outer_radius, uint8_t order, bool with_lines)
 {

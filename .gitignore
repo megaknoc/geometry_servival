@@ -1,6 +1,6 @@
 dumps/*
 build/*
 SFMT/*.o
-hexagon
+geometry_survival
 .lvimrc
 

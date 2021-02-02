@@ -30,7 +30,7 @@ typedef struct player_shape_t {
 typedef struct player_t {
     uint32_t    points;     // Player gets one point for each crushed bar.
     float       rot;        // Rotation (CW) off the player in radian.
-                            // 0      : at the top of the hexagon.
+                            // 0      : at the top of the geometry_survival.
                             // ..2*pi : somewhere clockwise around the circle
     uint8_t     x;          // x-coordinate of center of player
     uint8_t     y;          // y-coordinate of center of player
@@ -43,7 +43,7 @@ typedef struct player_t {
  * Position of a bar on the playfield.
  */
 typedef struct bar_t {
-    uint8_t sector;     // sector in the hexagon in which the bar lies
+    uint8_t sector;     // sector in the geometry_survival in which the bar lies
     uint8_t dist;       // distance of the bar from the center
     uint8_t width;      // width of the bar (extends to the outside)
     uint8_t timer;      // timer for the progress of an exploding bar
