@@ -3,13 +3,13 @@ CXX = clang++
 LD = clang++
 
 WARN = -Wall \
-	   -Werror \
-	   -Wno-unused-result \
-       -Wno-unused-variable \
-       -Wno-unused-function
+    -Werror \
+    -Wno-unused-result \
+    -Wno-unused-variable \
+    -Wno-unused-function
 
 INCLUDES = -I/usr/lib -lsfml-graphics -lsfml-window -lsfml-system \
-		   -lm
+	   -lm
 
 
 OPTIMIZATION = 0
@@ -17,10 +17,10 @@ OPTIMIZATION = 0
 # http://stackoverflow.com/questions/714100/os-detecting-makefile
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	INCLUDES += -lGL -I.
+    INCLUDES += -lGL -I.
 endif
 ifeq ($(UNAME_S),Darwin)
-	INCLUDES += -framework OpenGL
+    INCLUDES += -framework OpenGL
 endif
 SFMT = -DSFMT_MEXP=19937
 CFLAGS = -std=c99 -g -O$(OPTIMIZATION) $(WARN) $(SFMT)
@@ -28,23 +28,23 @@ LDFLAGS = $(INCLUDES)
 
 CXXFLAGS = -std=c++11 -g -O$(OPTIMIZATION) $(WARN) $(SFMT)
 
-SRCS = src/geometry_survival.cpp \
-	   src/simulator.cpp \
-	   src/framebuffer.c \
-	   src/input.c \
-	   src/game.c \
-	   src/draw.c \
-	   src/util.c
+SRCS = src/main.cpp \
+       src/simulator.cpp \
+       src/framebuffer.c \
+       src/input.c \
+       src/game.c \
+       src/draw.c \
+       src/util.c
 
 SRCS += SFMT/SFMT.c
 
-OBJS = build/geometry_survival.o \
-	   build/simulator.o \
-	   build/framebuffer.o \
-	   build/input.o \
-	   build/game.o \
-	   build/draw.o \
-	   build/util.o
+OBJS = build/main.o \
+       build/simulator.o \
+       build/framebuffer.o \
+       build/input.o \
+       build/game.o \
+       build/draw.o \
+       build/util.o
 
 OBJS += SFMT/SFMT.o
 
