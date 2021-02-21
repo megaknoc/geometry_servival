@@ -20,6 +20,7 @@ ifeq ($(UNAME_S),Linux)
     INCLUDES += -lGL -I.
 endif
 ifeq ($(UNAME_S),Darwin)
+    WARN+= -Wno-deprecated-declarations
     INCLUDES += -framework OpenGL
 endif
 SFMT = -DSFMT_MEXP=19937
